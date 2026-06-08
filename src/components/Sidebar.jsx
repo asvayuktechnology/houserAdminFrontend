@@ -1,0 +1,159 @@
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Home, 
+  Gift, 
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Trophy,
+  Activity,
+  HelpCircle,
+  Wallet,
+  SendToBack,
+  FolderKey,
+  Calculator,
+  Handshake,
+  House,
+  Pickaxe,
+  LucideHouse,
+  User,
+  HouseHeart,
+  User2Icon
+} from 'lucide-react';
+
+function SideBar({ isSidebarOpen=true, setIsSidebarOpen }) {
+  const [activeMenu, setActiveMenu] = useState("games");
+  const [isMobile, setIsMobile] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const sidebarRef = useRef(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 100);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const toggleCollapse = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const handleMenuClick = (menu) => {
+    setActiveMenu(menu);
+    localStorage.setItem("activeMenu", menu);
+    if (isMobile) setIsSidebarOpen(false);
+  };
+
+  useEffect(() => {
+    const savedActiveMenu = localStorage.getItem("activeMenu");
+    if (savedActiveMenu) setActiveMenu(savedActiveMenu);
+    
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const menuItems = [
+    // { id: "home", title: "Home", icon: <Home className="w-5 h-5" />, path: "/user/home" , status:0 },
+    { id: "home", title: "Home", icon: <HouseHeart className="w-5 h-5" />, path: "/admin/dashboard" , status:0 },
+    { id: "challenges", title: "Dealers", icon: <User2Icon className="w-5 h-5" />, path: "/admin/dealers", highlight: true, status:0 },
+    { id: "referral", title: "Add Banner", icon: <Pickaxe className="w-5 h-5" />, path: "/admin/add-banner" , status:0 },
+    { id: "rewards", title: "Properties", icon: <House className="w-5 h-5" />, path: "/admin/properties" , status:0 },
+    { id: "post-properties", title: "Post Properties", icon: <House className="w-5 h-5" />, path: "/admin/post-properties" , status:0 },
+    { id: "plans", title: "Fixed Properties", icon: <LucideHouse className="w-5 h-5" />, path: "/admin/properties" , status:0 },
+    { id: "add-user", title: " Add User", icon: <User className="w-5 h-5" />, path: "/admin/add-user" , status:0 },
+    { id: "add-dealer", title: " Add Dealer", icon: <User className="w-5 h-5" />, path: "/admin/add-dealer" , status:0 },
+   
+  ];
+
+  return (
+    <>
+      <AnimatePresence>
+        {isSidebarOpen && isMobile && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-md"
+            onClick={toggleSidebar}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside
+        ref={sidebarRef}
+        initial={{ x: isMobile ? "-100%" : 0 }}
+        animate={{ 
+          x: isSidebarOpen ? 0 : isMobile ? "-100%" : 0,
+          width: collapsed ? "80px" : "260px"
+        }}
+        transition={{ type: "spring", stiffness: 260, damping: 25 }}
+        className={`fixed z-50 h-screen
+          ${isSidebarOpen ? "left-0" : "-left-full md:left-0"}
+          bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950
+          border-r border-gray-800 shadow-2xl`}
+      >
+        <div className="h-full flex flex-col overflow-hidden">
+
+          {/* Menu */}
+          <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1 mt-14">
+            {menuItems.map((item) => (
+              item?.status==0 && (
+                <motion.div key={item.id} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  {item.path ? (
+                    <Link
+                      to={item.path}
+                      onClick={() => handleMenuClick(item.id)}
+                      className={`flex items-center gap-3 p-3 rounded-xl transition-all group ${
+                        activeMenu === item.id
+                          ? "bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 text-white"
+                          : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                      } ${item.highlight ? "ring-1 ring-cyan-400/40" : ""}`}
+                    >
+                      <span className={`${collapsed ? "mx-auto" : ""}`}>
+                        {item.icon}
+                      </span>
+
+                      {!collapsed && (
+                        <div className="flex items-center justify-between w-full">
+                          <span className="font-medium">{item.title}</span>
+                          {item.highlight && (
+                            <span className="text-xs px-2 py-0.5 rounded bg-cyan-500 text-black">
+                              New
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={item.action}
+                      className={`flex items-center w-full p-3 rounded-xl transition-all text-gray-400 hover:bg-red-500/10 hover:text-red-400 ${collapsed ? "justify-center" : ""}`}
+                    >
+                      <span className={`${collapsed ? "mx-auto" : "mr-3"}`}>
+                        {item.icon}
+                      </span>
+                      {!collapsed && <span>{item.title}</span>}
+                    </button>
+                  )}
+                </motion.div>
+              )
+            ))}
+          </div>
+
+        </div>
+      </motion.aside>
+    </>
+  );
+}
+
+export default React.memo(SideBar);
