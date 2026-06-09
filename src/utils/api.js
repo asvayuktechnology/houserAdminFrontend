@@ -4,7 +4,8 @@ import axios from "axios";
 import { getAccessToken, setAccessToken } from "./auth";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  // baseURL: "http://localhost:8000/api",
+  baseURL:"https://houzerapi.houzer.tech/api",
   withCredentials: true, // 🔥 important (for refresh token cookie)
 });
 
@@ -31,7 +32,7 @@ api.interceptors.response.use(
       try {
         // 🔄 call refresh API
         const res = await axios.post(
-          "http://localhost:8000/api/refresh-token",
+          "https://houzerapi.houzer.tech/api/refresh-token",
           {},
           { withCredentials: true }
         );
