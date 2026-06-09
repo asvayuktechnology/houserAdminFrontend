@@ -1,6 +1,7 @@
 import { getToken, setToken, clearToken } from "./auth";
 
 const BASE_URL = "https://houzerapi.houzer.tech/api/admin";
+// const BASE_URL = "http://localhost:8001/api/admin";
 
 // 🔥 COMMON FETCH (AUTO TOKEN + AUTO REFRESH)
 export const apiFetch = async (url, options = {}, retry = true) => {
@@ -26,7 +27,7 @@ export const apiFetch = async (url, options = {}, retry = true) => {
       console.log("🔄 Token expired, trying refresh...");
 
       const refreshRes = await fetch(
-        "https://houzerapi.houzer.tech/api/refresh-token",
+        `${BASE_URL}/refresh-token`,
         {
           method: "POST",
           credentials: "include",
