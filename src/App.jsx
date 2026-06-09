@@ -1,7 +1,7 @@
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import DashboardHome from './pages/Dashboard'
-import Layout from './components/layout';
+import Layout from './components/Layout';
 import { useState } from 'react';
 import PropertiesPage from './pages/Properties';
 import DealersPage from './pages/Dealers';
