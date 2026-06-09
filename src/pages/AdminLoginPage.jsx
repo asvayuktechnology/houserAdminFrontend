@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { loginAdmin } from "../comman/api";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const Input = ({ ...props }) => (
   <input
@@ -25,6 +26,8 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+    const { setIsAuth} = useAuth();
 
   const validate = () => {
     let newErrors = {};
@@ -56,7 +59,7 @@ export default function AdminLogin() {
       if (res?.token) {
         localStorage.setItem("adminToken", res.token);
         toast.success("Login successful 🚀");
-      
+        setIsAuth(true);
         navigate("/admin/dashboard");
       } else {
         toast.error("Invalid credentials ❌");

@@ -6,14 +6,14 @@ import { setToken } from "../comman/auth";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
   const [loading, setLoading] = useState(true);
 
   // 🔄 page refresh pe token wapas lao
  useEffect(() => {
   const refresh = async () => {
     try {
-      const res = await fetch("http://localhost:8001/api/admin/refresh-token", {
+      const res = await fetch("https://houzerapi.houzer.tech/api/admin/refresh-token", {
         method: "POST",
         credentials: "include",
       });

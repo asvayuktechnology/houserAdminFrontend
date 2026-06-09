@@ -1,4 +1,4 @@
-import { getToken, setToken, clearToken } from "./auth";
+import { getToken, setToken, clearToken} from "./auth";
 
 const BASE_URL = "https://houzerapi.houzer.tech/api/admin";
 // const BASE_URL = "http://localhost:8001/api/admin";
@@ -78,6 +78,7 @@ export const loginAdmin = async (email, password) => {
 
   // 🔥 MOST IMPORTANT LINE
   setToken(data.token);
+
 
   console.log("✅ Login Token Set:", data.token);
 
