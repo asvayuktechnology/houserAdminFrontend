@@ -241,4 +241,9 @@ export const updateFixedProperty = (id, data) =>
 
 
 
+export const allDeleteProperties = () =>
+  apiFetch("/admin/delete-all-properties", {
+    method: "DELETE",
+  });
+
  export const logout=()=>apiFetch("/logout")

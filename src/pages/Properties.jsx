@@ -8,6 +8,7 @@ import {
   getFixedProperties,
   deleteFixedProperty,
   updateFixedProperty,
+  allDeleteProperties,
 } from "../comman/api";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
@@ -31,6 +32,7 @@ export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
   const [selected, setSelected] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
+  const [deleteAll, setDeleteAll] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [fixedProperties, setFixedProperties] = useState([]);
@@ -43,29 +45,36 @@ export default function PropertiesPage() {
 
   // Pagination state
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(20);
   const [totalCount, setTotalCount] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
 
 
   const searchRef = useRef({ city: "", category: "", mobile: "", keyword: "" });
 
+  const allDataRef = useRef([]);
+
   const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
       const { city, category, mobile, keyword } = searchRef.current;
-      const params = { page, limit, city, category, mobileNumber: mobile, keyword };
+      const params = { limit: 10000, city, category, mobileNumber: mobile, keyword };
       const res = await getFixedProperties(params);
-      setFixedProperties(res?.data || []);
-      setTotalCount(res?.totalCount || 0);
-      setCurrentCount(res?.currentCount || 0);
+      const items = res?.data ?? res ?? [];
+      const allItems = Array.isArray(items) ? items : [];
+      allDataRef.current = allItems;
+      const start = (page - 1) * limit;
+      setFixedProperties(allItems.slice(start, start + limit));
+      setTotalCount(allItems.length);
+      setCurrentCount(Math.min(limit, Math.max(0, allItems.length - start)));
     } catch {
       toast.error("Failed to load properties ❌");
     } finally {
       setLoading(false);
     }
-  }, [page, limit]);
+  }, [page, limit, refreshKey]);
 
   useEffect(() => {
     fetchProperties();
@@ -78,13 +87,10 @@ export default function PropertiesPage() {
 
     if (!hasInputValues && hasRefValues) {
       searchRef.current = { city: "", category: "", mobile: "", keyword: "" };
-      if (page === 1) {
-        fetchProperties();
-      } else {
-        setPage(1);
-      }
+      setPage(1);
+      setRefreshKey((k) => k + 1);
     }
-  }, [searchCity, searchCategory, searchMobile, searchKeyword, page, fetchProperties]);
+  }, [searchCity, searchCategory, searchMobile, searchKeyword]);
 
   const handleSearch = () => {
     searchRef.current = {
@@ -109,11 +115,25 @@ export default function PropertiesPage() {
   const confirmDelete = async () => {
     try {
       await deleteFixedProperty(deleteId);
-      setFixedProperties((prev) => prev.filter((p) => p.id !== deleteId));
       toast.success("Property deleted ✅");
       setDeleteId(null);
+      fetchProperties();
     } catch {
       toast.error("Delete failed ❌");
+    }
+  };
+
+  const confirmDeleteAll = async () => {
+    try {
+      setLoading(true);
+      await allDeleteProperties();
+      toast.success("All properties deleted ✅");
+      setDeleteAll(false);
+      fetchProperties();
+    } catch {
+      toast.error("Delete all failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -188,10 +208,36 @@ const handleExport = () => {
       fetchProperties();
     } catch (err) {
       toast.error(err.message || "Import failed ❌");
+    } finally {
+      e.target.value = "";
     }
   };
 
   const totalPages = Math.ceil(totalCount / limit);
+
+  // Clamp page when totalPages shrinks (e.g. after search)
+  useEffect(() => {
+    if (page > totalPages && totalPages > 0) {
+      setPage(totalPages);
+    }
+  }, [totalPages, page]);
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+    if (totalPages <= maxVisible + 2) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      let start = Math.max(2, page - 1);
+      let end = Math.min(totalPages - 1, page + 1);
+      if (start > 2) pages.push("...");
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (end < totalPages - 1) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
@@ -270,11 +316,17 @@ const handleExport = () => {
           <Search className="w-4 h-4 cursor-pointer" />
           Search
         </Button>
+        <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
+          <Trash2 className="w-4 h-4 cursor-pointer" />
+          All Delete
+        </Button>
       </div>
 
       {/* COUNT INFO */}
       <div className="text-sm text-gray-400 mb-3">
-        Showing {currentCount} of {totalCount} properties
+        {fixedProperties.length > 0
+          ? `Showing ${(page - 1) * limit + 1} - ${(page - 1) * limit + fixedProperties.length} of ${totalCount} properties`
+          : "No properties found"}
       </div>
 
       {loading ? (
@@ -360,31 +412,39 @@ const handleExport = () => {
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6">
+        <div className="flex items-center justify-center gap-2 mt-6 cursor-pointer">
           <Button
-            className="bg-gray-700 hover:bg-gray-600"
+            className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
             Prev
           </Button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <Button
-              key={p}
-              className={`${
-                p === page
-                  ? "bg-indigo-600 hover:bg-indigo-500"
-                  : "bg-gray-700 hover:bg-gray-600"
-              }`}
-              onClick={() => setPage(p)}
-            >
-              {p}
-            </Button>
-          ))}
+          <span className="text-sm text-gray-400 px-3">
+            Page {page} of {totalPages}
+          </span>
+
+          {getPageNumbers().map((p, i) =>
+            p === "..." ? (
+              <span key={`ellipsis-${i}`} className="px-2 text-gray-500">...</span>
+            ) : (
+              <Button
+                key={p}
+                className={`${
+                  p === page
+                    ? "bg-indigo-600 hover:bg-indigo-500"
+                    : "bg-gray-700 hover:bg-gray-600"
+                }`}
+                onClick={() => setPage(p)}
+              >
+                {p}
+              </Button>
+            )
+          )}
 
           <Button
-            className="bg-gray-700 hover:bg-gray-600"
+            className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           >
@@ -431,6 +491,33 @@ const handleExport = () => {
               <Button
                 className="bg-gray-700 cursor-pointer"
                 onClick={() => setSelected(null)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ALL DELETE CONFIRM MODAL */}
+      {deleteAll && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm border border-gray-800 text-center space-y-4">
+            <h2 className="text-xl font-semibold">Delete All Properties?</h2>
+            <p className="text-gray-400 text-sm">
+              This will permanently delete all properties.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button
+                className="bg-red-600 hover:bg-red-500"
+                onClick={confirmDeleteAll}
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Yes, Delete All"}
+              </Button>
+              <Button
+                className="bg-gray-700"
+                onClick={() => setDeleteAll(false)}
               >
                 Cancel
               </Button>
