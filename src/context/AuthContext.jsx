@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { setToken } from "../comman/auth";
-
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
  useEffect(() => {
   const refresh = async () => {
     try {
-      const res = await fetch("https://houzerapi.houzer.tech/api/admin/refresh-token", {
+      const res = await fetch(`${BASE_URL}/admin/refresh-token`, {
         method: "POST",
         credentials: "include",
       });

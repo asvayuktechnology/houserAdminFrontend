@@ -2,10 +2,10 @@
 
 import axios from "axios";
 import { getAccessToken, setAccessToken } from "./auth";
-
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const api = axios.create({
   // baseURL: "http://localhost:8000/api",
-  baseURL:"https://houzerapi.houzer.tech/api/admin",
+  baseURL:`${BASE_URL}`,
   withCredentials: true, // 🔥 important (for refresh token cookie)
 });
 

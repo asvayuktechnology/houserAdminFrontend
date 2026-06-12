@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
-import { Trash2, Pencil, Download } from "lucide-react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { Trash2, Pencil, Download, Upload, Search } from "lucide-react";
 import {
   getProperties,
   deleteProperty,
   updateProperty,
+  uploadPropertiesExcel,
+  getFixedProperties,
+  deleteFixedProperty,
+  updateFixedProperty,
 } from "../comman/api";
 import toast from "react-hot-toast";
-
+import * as XLSX from "xlsx";
 const Button = ({ children, className = "", ...props }) => (
   <button
     className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
@@ -26,94 +30,168 @@ const Input = (props) => (
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH
-  const fetchProperties = async () => {
+  const [fixedProperties, setFixedProperties] = useState([]);
+
+  // Search state
+  const [searchCity, setSearchCity] = useState("");
+  const [searchCategory, setSearchCategory] = useState("");
+  const [searchMobile, setSearchMobile] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentCount, setCurrentCount] = useState(0);
+
+
+
+  const searchRef = useRef({ city: "", category: "", mobile: "", keyword: "" });
+
+  const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await getProperties();
-      setProperties(res?.data || []);
+      const { city, category, mobile, keyword } = searchRef.current;
+      const params = { page, limit, city, category, mobileNumber: mobile, keyword };
+      const res = await getFixedProperties(params);
+      setFixedProperties(res?.data || []);
+      setTotalCount(res?.totalCount || 0);
+      setCurrentCount(res?.currentCount || 0);
     } catch {
       toast.error("Failed to load properties ❌");
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, limit]);
 
   useEffect(() => {
     fetchProperties();
-  }, []);
+  }, [fetchProperties]);
 
-  // ✅ DELETE
-  const handleDelete = async (id) => {
+  // Refetch when all search inputs become empty after a previous search
+  useEffect(() => {
+    const hasInputValues = searchCity || searchCategory || searchMobile || searchKeyword;
+    const hasRefValues = searchRef.current.city || searchRef.current.category || searchRef.current.mobile || searchRef.current.keyword;
+
+    if (!hasInputValues && hasRefValues) {
+      searchRef.current = { city: "", category: "", mobile: "", keyword: "" };
+      if (page === 1) {
+        fetchProperties();
+      } else {
+        setPage(1);
+      }
+    }
+  }, [searchCity, searchCategory, searchMobile, searchKeyword, page, fetchProperties]);
+
+  const handleSearch = () => {
+    searchRef.current = {
+      city: searchCity,
+      category: searchCategory,
+      mobile: searchMobile,
+      keyword: searchKeyword,
+    };
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      fetchProperties();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
+
+  const handleDelete = (id) => setDeleteId(id);
+
+  const confirmDelete = async () => {
     try {
-      await deleteProperty(id);
-      setProperties((prev) => prev.filter((p) => p.id !== id));
+      await deleteFixedProperty(deleteId);
+      setFixedProperties((prev) => prev.filter((p) => p.id !== deleteId));
       toast.success("Property deleted ✅");
+      setDeleteId(null);
     } catch {
       toast.error("Delete failed ❌");
     }
   };
 
-  // ✅ EDIT
   const handleEdit = (property) => setSelected(property);
 
-  // ✅ UPDATE
   const handleSave = async () => {
     try {
       setLoading(true);
-      const res = await updateProperty(selected.id, selected);
+      const { id, imageUrl, createdAt, ...payload } = selected;
+      const res = await updateFixedProperty(selected.id, payload);
 
-      setProperties((prev) =>
+      setFixedProperties((prev) =>
         prev.map((p) => (p.id === selected.id ? res.data : p))
       );
 
       toast.success("Property updated ✅");
       setSelected(null);
-    } catch {
-      toast.error("Update failed ❌");
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error(err?.response?.data?.message || "Update failed ❌");
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ EXPORT CSV
-  const handleExport = () => {
-    if (!properties.length) {
-      toast.error("No data to export ❌");
-      return;
+
+const handleExport = () => {
+  if (!fixedProperties.length) {
+    toast.error("No data to export ❌");
+    return;
+  }
+
+  const exportData = fixedProperties.map((p) => ({
+    City: p.city || "",
+    SectorId: p.sector || "",
+    PlotNumber: p.plotNumber || "",
+    CategoryCode: p.categoryCode || "",
+    SubCategoryCode: p.subCategoryCode || "",
+    Name: p.name || "",
+    FatherName: p.fatherName || "",
+    PermanentAddress: p.permanentAddress || "",
+    CorrespondenceAddress: p.correspondenceAddress || "",
+    MobileNumber: p.mobileNumber || "",
+    Email: p.email || "",
+    ImageUrl: p.imageUrl || "",
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Properties");
+
+  XLSX.writeFile(workbook, "properties.xlsx");
+};
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    try {
+      const res = await uploadPropertiesExcel(file);
+
+      const { total, inserted, skipped, skippedRows } = res.data;
+
+      let msg = `Import completed ✅\nTotal: ${total}, Inserted: ${inserted}, Skipped: ${skipped}`;
+
+      if (skippedRows?.length) {
+        msg += `\nReason: ${skippedRows[0].reason}`;
+      }
+
+      toast.success(msg);
+      fetchProperties();
+    } catch (err) {
+      toast.error(err.message || "Import failed ❌");
     }
-
-    const headers = [
-      "city",
-      "sector",
-      "plotNumber",
-      "category",
-      "plotSize",
-      "propertyStatus",
-      "ownerName",
-      "ownerPhone",
-    ];
-
-    const csvRows = [];
-    csvRows.push(headers.join(","));
-
-    properties.forEach((p) => {
-      const row = headers.map((field) => `"${p[field] || ""}"`);
-      csvRows.push(row.join(","));
-    });
-
-    const blob = new Blob([csvRows.join("\n")], {
-      type: "text/csv",
-    });
-
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "properties.csv";
-    a.click();
   };
+
+  const totalPages = Math.ceil(totalCount / limit);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
@@ -122,13 +200,81 @@ export default function PropertiesPage() {
       <div className="flex justify-between items-center mb-6 mt-14">
         <h1 className="text-3xl font-bold">Properties</h1>
 
-        <Button
-          className="bg-green-600 hover:bg-green-500"
-          onClick={handleExport}
-        >
-          <Download className="w-4 h-4" />
-          Export Excel
+        <div className="flex items-center gap-3">
+          <Button
+            className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
+            onClick={() => document.getElementById("excelInput").click()}
+          >
+            <Upload className="w-4 h-4 cursor-pointer" />
+            Import Excel
+          </Button>
+
+          <input
+            id="excelInput"
+            type="file"
+            accept=".xlsx,.xls"
+            className="hidden"
+            onChange={handleImport}
+          />
+
+          <Button
+            className="bg-green-600 hover:bg-red-500 cursor-pointer"
+            onClick={handleExport}
+          >
+            <Download className="w-4 h-4 cursor-pointer" />
+            Export Excel
+          </Button>
+        </div>
+      </div>
+
+      {/* SEARCH INPUTS */}
+      <div className="flex flex-wrap items-end gap-3 mb-6">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">City</label>
+          <Input
+            placeholder="City"
+            value={searchCity}
+            onChange={(e) => setSearchCity(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">Category</label>
+          <Input
+            placeholder="Category"
+            value={searchCategory}
+            onChange={(e) => setSearchCategory(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">Mobile</label>
+          <Input
+            placeholder="Mobile Number"
+            value={searchMobile}
+            onChange={(e) => setSearchMobile(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">Keyword</label>
+          <Input
+            placeholder="Search By Email & Name"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onKeyDown={handleKeyDown}
+
+          />
+        </div>
+        <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
+          <Search className="w-4 h-4 cursor-pointer" />
+          Search
         </Button>
+      </div>
+
+      {/* COUNT INFO */}
+      <div className="text-sm text-gray-400 mb-3">
+        Showing {currentCount} of {totalCount} properties
       </div>
 
       {loading ? (
@@ -138,51 +284,112 @@ export default function PropertiesPage() {
           <table className="w-full border border-gray-800 rounded-xl overflow-hidden">
             <thead className="bg-gray-800 text-left text-sm uppercase text-gray-400">
               <tr>
+                <th className="p-3">#</th>
                 <th className="p-3">City</th>
                 <th className="p-3">Sector</th>
                 <th className="p-3">Plot</th>
-                <th className="p-3">Category</th>
-                <th className="p-3">Size</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Owner</th>
-                <th className="p-3">Phone</th>
+                <th className="p-3">Category Code</th>
+                <th className="p-3">Sub Category</th>
+                <th className="p-3">Name</th>
+                <th className="p-3">Father Name</th>
+                <th className="p-3">PermanentAddress</th>
+                <th className="p-3">CorrespondenceAddress</th>
+                <th className="p-3">Mobile</th>
+                <th className="p-3">Email</th>
+                <th className="p-3">Image</th>
                 <th className="p-3 text-center">Actions</th>
               </tr>
             </thead>
 
             <tbody>
-              {properties?.map((p, i) => (
+              {!fixedProperties?.length ? (
+                <tr>
+                  <td colSpan={14} className="p-6 text-center text-gray-500">
+                    No properties found
+                  </td>
+                </tr>
+              ) : fixedProperties?.map((p, i) => (
                 <tr
                   key={p.id}
                   className={`border-t border-gray-800 hover:bg-gray-900 ${
                     i % 2 === 0 ? "bg-gray-950/50" : ""
                   }`}
                 >
+                  <td className="p-3 text-gray-400">{(page - 1) * limit + i + 1}</td>
                   <td className="p-3">{p.city}</td>
                   <td className="p-3">{p.sector}</td>
                   <td className="p-3">{p.plotNumber}</td>
-                  <td className="p-3">{p.category}</td>
-                  <td className="p-3">{p.plotSize}</td>
-                  <td className="p-3">{p.propertyStatus}</td>
-                  <td className="p-3">{p.ownerName}</td>
-                  <td className="p-3">{p.ownerPhone}</td>
+                  <td className="p-3">{p.categoryCode}</td>
+                  <td className="p-3">{p.subCategoryCode}</td>
+                  <td className="p-3">{p.name}</td>
+                  <td className="p-3">{p.fatherName}</td>
+                   <td className="p-3">{p.permanentAddress}</td>
+                    <td className="p-3">{p.correspondenceAddress}</td>
+                  <td className="p-3">{p.mobileNumber}</td>
+                  <td className="p-3">{p.email}</td>
+                  <td className="p-3">
+                    {p.imageUrl ? (
+                      <img
+                        src={p.imageUrl}
+                        alt="property"
+                        className="w-12 h-12 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <span className="text-gray-600">—</span>
+                    )}
+                  </td>
 
                   <td className="p-3 flex gap-2 justify-center">
                     <Button
                       className="bg-red-600 hover:bg-red-500"
                       onClick={() => handleDelete(p.id)}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4 cursor-pointer" />
                     </Button>
 
                     <Button onClick={() => handleEdit(p)}>
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="w-4 h-4 cursor-pointer" />
                     </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* PAGINATION */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <Button
+            className="bg-gray-700 hover:bg-gray-600"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            Prev
+          </Button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Button
+              key={p}
+              className={`${
+                p === page
+                  ? "bg-indigo-600 hover:bg-indigo-500"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </Button>
+          ))}
+
+          <Button
+            className="bg-gray-700 hover:bg-gray-600"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            Next
+          </Button>
         </div>
       )}
 
@@ -196,11 +403,15 @@ export default function PropertiesPage() {
               "city",
               "sector",
               "plotNumber",
-              "category",
-              "plotSize",
-              "propertyStatus",
-              "ownerName",
-              "ownerPhone",
+              "categoryCode",
+              "subCategoryCode",
+              "name",
+              "fatherName",
+              "permanentAddress",
+              "correspondenceAddress",
+              "mobileNumber",
+              
+              "email",
             ].map((field) => (
               <Input
                 key={field}
@@ -212,14 +423,40 @@ export default function PropertiesPage() {
               />
             ))}
 
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-2 pt-2 cursor-pointer">
               <Button onClick={handleSave} disabled={loading}>
                 {loading ? "Saving..." : "Save"}
               </Button>
 
               <Button
-                className="bg-gray-700"
+                className="bg-gray-700 cursor-pointer"
                 onClick={() => setSelected(null)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRM MODAL */}
+      {deleteId && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm border border-gray-800 text-center space-y-4">
+            <h2 className="text-xl font-semibold">Are you sure?</h2>
+            <p className="text-gray-400 text-sm">
+              This property will be deleted permanently.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button
+                className="bg-red-600 hover:bg-red-500"
+                onClick={confirmDelete}
+              >
+                Yes, Delete
+              </Button>
+              <Button
+                className="bg-gray-700"
+                onClick={() => setDeleteId(null)}
               >
                 Cancel
               </Button>

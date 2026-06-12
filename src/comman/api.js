@@ -1,6 +1,7 @@
 import { getToken, setToken, clearToken} from "./auth";
 
-const BASE_URL = "https://houzerapi.houzer.tech/api/admin";
+// const BASE_URL = "https://houzerapi.houzer.tech/api/admin";
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 // const BASE_URL = "http://localhost:8001/api/admin";
 
 // 🔥 COMMON FETCH (AUTO TOKEN + AUTO REFRESH)
@@ -27,7 +28,7 @@ export const apiFetch = async (url, options = {}, retry = true) => {
       console.log("🔄 Token expired, trying refresh...");
 
       const refreshRes = await fetch(
-        `${BASE_URL}/refresh-token`,
+        `${BASE_URL}/admin/refresh-token`,
         {
           method: "POST",
           credentials: "include",
@@ -65,7 +66,7 @@ export const apiFetch = async (url, options = {}, retry = true) => {
 
 // 🔐 LOGIN
 export const loginAdmin = async (email, password) => {
-  const res = await fetch(`${BASE_URL}/login`, {
+  const res = await fetch(`${BASE_URL}/admin/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -88,27 +89,27 @@ export const loginAdmin = async (email, password) => {
 
 
 // 📊 DASHBOARD
-export const getDashboard = () => apiFetch("/dashboard");
-export const getDashboardStats = () => apiFetch("/dashboard/stats");
+export const getDashboard = () => apiFetch("/admin/dashboard");
+export const getDashboardStats = () => apiFetch("/admin/dashboard/stats");
 
 
 
 // 👤 DEALERS
-export const getDealers = () => apiFetch("/dealers");
+export const getDealers = () => apiFetch("/admin/dealers");
 
 export const addDealer = (data) =>
-  apiFetch("/create-dealers", {
+  apiFetch("/admin/create-dealers", {
     method: "POST",
     body: JSON.stringify(data),
   });
 
 export const deleteDealer = (id) =>
-  apiFetch(`/dealers/${id}`, {
+  apiFetch(`/admin/dealers/${id}`, {
     method: "DELETE",
   });
 
 export const updateDealer = (id, data) =>
-  apiFetch(`/dealers/${id}`, {
+  apiFetch(`/admin/dealers/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
   });
@@ -116,43 +117,49 @@ export const updateDealer = (id, data) =>
 
 
 // 🏠 PROPERTIES
-export const getProperties = () => apiFetch("/properties");
+export const getProperties = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/admin/properties${qs ? "?" + qs : ""}`);
+};
 
 export const addProperty = (data) =>
-  apiFetch("/properties", {
+  apiFetch("/admin/properties", {
     method: "POST",
     body: JSON.stringify(data),
   });
 
 export const deleteProperty = (id) =>
-  apiFetch(`/properties/${id}`, {
+  apiFetch(`/admin/properties/${id}`, {
     method: "DELETE",
   });
 
 export const updateProperty = (id, data) =>
-  apiFetch(`/properties/${id}`, {
+  apiFetch(`/admin/properties/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
   });
 
 
-
 // 👥 USERS
-export const getUsers = () => apiFetch("/users");
+export const getUsers = () => apiFetch("/admin/users");
 
 export const addUser = (data) =>
-  apiFetch("/create-user", {
+  apiFetch("/admin/create-user", {
     method: "POST",
     body: JSON.stringify(data),
   });
 
 export const deleteUser = (id) =>
-  apiFetch(`/users/${id}`, {
+  apiFetch(`/admin/users/${id}`, {
     method: "DELETE",
   });
 
 export const updateUser = (id, data) =>
-  apiFetch(`/users/${id}`, {
+  apiFetch(`/admin/users/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
   });
@@ -161,18 +168,18 @@ export const updateUser = (id, data) =>
 
 // 🖼 BANNERS
 export const getBanners = (category) =>
-  apiFetch(category ? `/banners?category=${category}` : "/banners");
+  apiFetch(category ? `/admin/banners?category=${category}` : "/admin/banners");
 
 // ✅ CREATE (FormData)
 export const addBanner = (formData) =>
-  apiFetch("/create-banner", {
+  apiFetch("/admin/create-banner", {
     method: "POST",
     body: formData,
   });
 
 // ✅ DELETE
 export const deleteBanner = (id) =>
-  apiFetch(`/banners/${id}`, {
+  apiFetch(`/admin/banners/${id}`, {
     method: "DELETE",
   });
 
@@ -188,14 +195,50 @@ export const updateBanner = (id, data) => {
     body = JSON.stringify(data);
   }
 
-  return apiFetch(`/banners/${id}`, {
+  return apiFetch(`/admin/banners/${id}`, {
     method: "PUT",
     body,
   });
 };
 
 
- export const getPostProperties = () => apiFetch("/post-properties");
+ export const getPostProperties = () => apiFetch("/admin/post-properties");
+
+
+ ///////////// Updated New Api///////////
+
+export const uploadPropertiesExcel = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return apiFetch("/admin/upload-properties", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+
+
+export const getFixedProperties = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/fixed-properties${qs ? "?" + qs : ""}`);
+};
+
+export const deleteFixedProperty = (id) =>
+  apiFetch(`/admin/fixed-properties/${id}`, {
+    method: "DELETE",
+  });
+
+export const updateFixedProperty = (id, data) =>
+  apiFetch(`/admin/fixed-properties/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+
 
 
  export const logout=()=>apiFetch("/logout")
