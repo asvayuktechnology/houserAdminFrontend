@@ -56,7 +56,9 @@ export const apiFetch = async (url, options = {}, retry = true) => {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data?.message || "API Error");
+    const err = new Error(data?.message || "API Error");
+    err.data = data;
+    throw err;
   }
 
   return data;
@@ -166,7 +168,14 @@ export const updateProperty = (id, data) =>
 
 
 // 👥 USERS
-export const getUsers = () => apiFetch("/admin/users");
+export const getUsers = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/admin/users${qs ? "?" + qs : ""}`);
+};
 
 export const addUser = (data) =>
   apiFetch("/admin/create-user", {

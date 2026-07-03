@@ -71,7 +71,7 @@ function SideBar({ isSidebarOpen=true, setIsSidebarOpen }) {
     { id: "post-properties", title: "Post Properties", icon: <House className="w-5 h-5" />, path: "/admin/post-properties" , status:0 },
     { id: "plans", title: "Fixed Properties", icon: <LucideHouse className="w-5 h-5" />, path: "/admin/properties" , status:0 },
     { id: "add-user", title: " Add User", icon: <User className="w-5 h-5" />, path: "/admin/add-user" , status:0 },
-    { id: "add-dealer", title: " Add Dealer", icon: <User className="w-5 h-5" />, path: "/admin/add-dealer" , status:0 },
+    { id: "add-dealer", title: " Dealer Listings", icon: <User className="w-5 h-5" />, path: "/admin/add-dealer" , status:0 },
    
   ];
 
