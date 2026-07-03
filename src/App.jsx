@@ -11,6 +11,7 @@ import { AddDealerPage } from './pages/AddDealer';
 import AdminLogin from './pages/AdminLoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PostPropertiesPage from './pages/PostProperties';
+import LeadPropertiesPage from './pages/LeadProperties';
 
 function App() {
 
@@ -36,8 +37,8 @@ function App() {
         element: <DashboardHome />
       },
       {
-        path:'properties',
-        element: <PropertiesPage />
+        path:'lead-properties',
+        element: <LeadPropertiesPage />
       },
       {
         path:'dealers',
@@ -47,6 +48,11 @@ function App() {
         path:'add-banner',
         element: <BannersPage />
       },
+        {
+        path:'properties',
+        element: <PropertiesPage />
+      },
+      
       {
         path:'add-user',
         element: <UsersPage />

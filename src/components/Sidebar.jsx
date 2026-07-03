@@ -167,6 +167,7 @@ import SidebarMenuItem from "./sidebar/SidebarMenuItem";
 import SidebarFooter from "./sidebar/SidebarFooter";
 import { menuSections } from "./sidebar/menuData";
 import { useLocation } from "react-router-dom";
+import { House, HouseHeart, LucideHouse, Pickaxe, User, User2Icon } from "lucide-react";
 
 
 
@@ -212,14 +213,14 @@ function Sidebar({
       window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleMenuClick = (menu) => {
-    setActiveMenu(menu);
-    localStorage.setItem("activeMenu", menu);
+  // const handleMenuClick = (menu) => {
+  //   setActiveMenu(menu);
+  //   localStorage.setItem("activeMenu", menu);
 
-    if (isMobile) {
-      setIsSidebarOpen(false);
-    }
-  };
+  //   if (isMobile) {
+  //     setIsSidebarOpen(false);
+  //   }
+  // };
 
   const handleLogout = () => {
     localStorage.clear();
@@ -229,10 +230,43 @@ function Sidebar({
     }, 100);
   };
 
-  const location = useLocation();
-  const handleDropdownToggle = (menuId) => {
-    setOpenMenu((prev) => (prev === menuId ? null : menuId));
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const toggleCollapse = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const handleMenuClick = (menu) => {
+    setActiveMenu(menu);
+    localStorage.setItem("activeMenu", menu);
+    if (isMobile) setIsSidebarOpen(false);
+  };
+
+  useEffect(() => {
+    const savedActiveMenu = localStorage.getItem("activeMenu");
+    if (savedActiveMenu) setActiveMenu(savedActiveMenu);
+    
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const menuItems = [
+    // { id: "home", title: "Home", icon: <Home className="w-5 h-5" />, path: "/user/home" , status:0 },
+    { id: "home", title: "Home", icon: <HouseHeart className="w-5 h-5" />, path: "/admin/dashboard" , status:0 },
+    { id: "challenges", title: "Dealers", icon: <User2Icon className="w-5 h-5" />, path: "/admin/dealers", highlight: true, status:0 },
+    { id: "referral", title: "Add Banner", icon: <Pickaxe className="w-5 h-5" />, path: "/admin/add-banner" , status:0 },
+    { id: "rewards", title: " Lead Properties", icon: <House className="w-5 h-5" />, path: "/admin/lead-properties" , status:0 },
+    { id: "post-properties", title: "Post Properties", icon: <House className="w-5 h-5" />, path: "/admin/post-properties" , status:0 },
+    { id: "plans", title: "Fixed Properties", icon: <LucideHouse className="w-5 h-5" />, path: "/admin/properties" , status:0 },
+    { id: "add-user", title: " Add User", icon: <User className="w-5 h-5" />, path: "/admin/add-user" , status:0 },
+    { id: "add-dealer", title: " Add Dealer", icon: <User className="w-5 h-5" />, path: "/admin/add-dealer" , status:0 },
+   
+  ];
 
   return (
     <>

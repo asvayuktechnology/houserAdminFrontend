@@ -40,9 +40,9 @@ export default function PropertiesPage() {
 
   // Search state
   const [searchCity, setSearchCity] = useState("");
-  const [searchCategory, setSearchCategory] = useState("");
-  const [searchMobile, setSearchMobile] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchPlotNumber, setSearchPlotNumber] = useState("");
+  const [searchSector, setSearchSector] = useState("");
+  const [searchMobileNumber, setSearchMobileNumber] = useState("");
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -53,23 +53,17 @@ export default function PropertiesPage() {
 
 
 
-  const searchRef = useRef({ city: "", category: "", mobile: "", keyword: "" });
-
-  const allDataRef = useRef([]);
+  const searchRef = useRef({ city: "", plotNumber: "", sector: "", mobileNumber: "" });
 
   const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
-      const { city, category, mobile, keyword } = searchRef.current;
-      const params = { limit: 10000, city, category, mobileNumber: mobile, keyword };
+      const { city, plotNumber, sector, mobileNumber } = searchRef.current;
+      const params = { page, limit, city, plotNumber, sector, mobileNumber };
       const res = await getFixedProperties(params);
-      const items = res?.data ?? res ?? [];
-      const allItems = Array.isArray(items) ? items : [];
-      allDataRef.current = allItems;
-      const start = (page - 1) * limit;
-      setFixedProperties(allItems.slice(start, start + limit));
-      setTotalCount(allItems.length);
-      setCurrentCount(Math.min(limit, Math.max(0, allItems.length - start)));
+      setFixedProperties(res?.data ?? []);
+      setTotalCount(res?.totalCount ?? 0);
+      setCurrentCount(res?.currentCount ?? 0);
     } catch {
       toast.error("Failed to load properties ❌");
     } finally {
@@ -83,22 +77,22 @@ export default function PropertiesPage() {
 
   // Refetch when all search inputs become empty after a previous search
   useEffect(() => {
-    const hasInputValues = searchCity || searchCategory || searchMobile || searchKeyword;
-    const hasRefValues = searchRef.current.city || searchRef.current.category || searchRef.current.mobile || searchRef.current.keyword;
+    const hasInputValues = searchCity || searchPlotNumber || searchSector || searchMobileNumber;
+    const hasRefValues = searchRef.current.city || searchRef.current.plotNumber || searchRef.current.sector || searchRef.current.mobileNumber;
 
     if (!hasInputValues && hasRefValues) {
-      searchRef.current = { city: "", category: "", mobile: "", keyword: "" };
+      searchRef.current = { city: "", plotNumber: "", sector: "", mobileNumber: "" };
       setPage(1);
       setRefreshKey((k) => k + 1);
     }
-  }, [searchCity, searchCategory, searchMobile, searchKeyword]);
+  }, [searchCity, searchPlotNumber, searchSector, searchMobileNumber]);
 
   const handleSearch = () => {
     searchRef.current = {
       city: searchCity,
-      category: searchCategory,
-      mobile: searchMobile,
-      keyword: searchKeyword,
+      plotNumber: searchPlotNumber,
+      sector: searchSector,
+      mobileNumber: searchMobileNumber,
     };
     if (page !== 1) {
       setPage(1);
@@ -161,33 +155,43 @@ export default function PropertiesPage() {
   };
 
 
-  const handleExport = () => {
-    if (!fixedProperties.length) {
-      toast.error("No data to export ❌");
-      return;
+  const handleExport = async () => {
+    try {
+      setLoading(true);
+      const { city, plotNumber, sector, mobileNumber } = searchRef.current;
+      const res = await getFixedProperties({ export: true, city, plotNumber, sector, mobileNumber });
+      const allData = res?.data ?? res ?? [];
+      const items = Array.isArray(allData) ? allData : [];
+
+      if (!items.length) {
+        toast.error("No data to export ❌");
+        return;
+      }
+
+      const exportData = items.map((p) => ({
+        City: p.city || "",
+        SectorId: p.sector || "",
+        PlotNumber: p.plotNumber || "",
+        CategoryCode: p.categoryCode || "",
+        SubCategoryCode: p.subCategoryCode || "",
+        Name: p.name || "",
+        FatherName: p.fatherName || "",
+        PermanentAddress: p.permanentAddress || "",
+        CorrespondenceAddress: p.correspondenceAddress || "",
+        MobileNumber: p.mobileNumber || "",
+        Email: p.email || "",
+        // ImageUrl: p.imageUrl || "",
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Properties");
+      XLSX.writeFile(workbook, "properties.xlsx");
+    } catch (err) {
+      toast.error("Export failed ❌");
+    } finally {
+      setLoading(false);
     }
-
-    const exportData = fixedProperties.map((p) => ({
-      City: p.city || "",
-      SectorId: p.sector || "",
-      PlotNumber: p.plotNumber || "",
-      CategoryCode: p.categoryCode || "",
-      SubCategoryCode: p.subCategoryCode || "",
-      Name: p.name || "",
-      FatherName: p.fatherName || "",
-      PermanentAddress: p.permanentAddress || "",
-      CorrespondenceAddress: p.correspondenceAddress || "",
-      MobileNumber: p.mobileNumber || "",
-      Email: p.email || "",
-      ImageUrl: p.imageUrl || "",
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Properties");
-
-    XLSX.writeFile(workbook, "properties.xlsx");
   };
   const handleImport = async (e) => {
     const file = e.target.files[0];
@@ -286,31 +290,30 @@ export default function PropertiesPage() {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Category</label>
+          <label className="text-xs text-gray-400">Plot Number</label>
           <Input
-            placeholder="Category"
-            value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
+            placeholder="Plot Number"
+            value={searchPlotNumber}
+            onChange={(e) => setSearchPlotNumber(e.target.value)}
             onKeyDown={handleKeyDown}
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Mobile</label>
+          <label className="text-xs text-gray-400">Sector</label>
+          <Input
+            placeholder="Sector"
+            value={searchSector}
+            onChange={(e) => setSearchSector(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">Mobile Number</label>
           <Input
             placeholder="Mobile Number"
-            value={searchMobile}
-            onChange={(e) => setSearchMobile(e.target.value)}
+            value={searchMobileNumber}
+            onChange={(e) => setSearchMobileNumber(e.target.value)}
             onKeyDown={handleKeyDown}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Keyword</label>
-          <Input
-            placeholder="Search By Email & Name"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            onKeyDown={handleKeyDown}
-
           />
         </div>
         <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
@@ -363,23 +366,17 @@ export default function PropertiesPage() {
                 </tr>
               ) : fixedProperties?.map((p, i) => (
                 <motion.tr
-                layout
-whileHover={{
-    scale:1.005
-}}
-transition={{
-    duration:.18
-}}
+                  layout
+                  whileHover={{
+                    scale: 1.005
+                  }}
+                  transition={{
+                    duration: .18
+                  }}
 
                   key={p.id}
-                  className={`group
-border-b
-border-[#2A3052]
-transition-all
-duration-200
-hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
-                    }`}
-                >
+                  className={`group border-b border-[#2A3052] transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
+                    }`}>
                   <td className="px-6 py-5 whitespace-nowrap text-gray-400">{(page - 1) * limit + i + 1}</td>
                   <td className="px-6 py-5 whitespace-nowrap">{p.city}</td>
                   <td className="px-6 py-5 whitespace-nowrap">{p.sector}</td>
@@ -402,7 +399,7 @@ hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
                     ) : (
                       <span className="text-gray-600">—</span>
                     )}
-                  </td>
+                  </td> 
 
                   <td className="p-3 flex gap-2 justify-center">
                     <Button
@@ -417,7 +414,7 @@ hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
                     </Button>
                   </td>
                 </motion.tr>
-              ))}
+            ))}
             </tbody>
           </table>
         </div>
