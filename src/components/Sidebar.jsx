@@ -297,7 +297,7 @@ const handleDropdownToggle = (menuId) => {
           stiffness: 260,
           damping: 24,
         }}
-        className="fixed left-0 top-0 z-999 flex h-screen flex-col border-r border-[#2A3052] bg-[#171B2E]"
+        className="fixed left-0 top-0 z-999 flex h-screen flex-col border-r border-[#2A3052] bg-[#171B2E] overflow-hidden"
       >
         {/* Logo */}
         <SidebarLogo collapsed={collapsed} />
@@ -306,7 +306,7 @@ const handleDropdownToggle = (menuId) => {
         {/* <SidebarProfile collapsed={collapsed} /> */}
 
         {/* Menu */}
-        <div className="sidebar flex-1 overflow-y-auto py-3">
+        <div className="sidebar flex-1 overflow-y-auto overflow-x-hidden py-3">
           {menuSections.map((section) => (
             <div key={section.title}>
               <SidebarSection
