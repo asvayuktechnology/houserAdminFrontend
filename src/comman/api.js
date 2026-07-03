@@ -95,7 +95,14 @@ export const getDashboardStats = () => apiFetch("/admin/dashboard/stats");
 
 
 // 👤 DEALERS
-export const getDealers = () => apiFetch("/admin/dealers");
+export const getDealers = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/admin/dealers${qs ? "?" + qs : ""}`);
+};
 
 export const addDealer = (data) =>
   apiFetch("/admin/create-dealers", {
@@ -112,6 +119,20 @@ export const updateDealer = (id, data) =>
   apiFetch(`/admin/dealers/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
+  });
+
+export const uploadDealersExcel = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return apiFetch("/admin/upload-dealers", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+export const allDeleteDealers = () =>
+  apiFetch("/admin/delete-all-dealers", {
+    method: "DELETE",
   });
 
 

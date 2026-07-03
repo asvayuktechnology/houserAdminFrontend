@@ -54,21 +54,15 @@ export default function PropertiesPage() {
 
   const searchRef = useRef({ city: "", category: "", mobile: "", keyword: "" });
 
-  const allDataRef = useRef([]);
-
   const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
       const { city, category, mobile, keyword } = searchRef.current;
-      const params = { limit: 10000, city, category, mobileNumber: mobile, keyword };
+      const params = { page, limit, city, category, mobileNumber: mobile, keyword };
       const res = await getFixedProperties(params);
-      const items = res?.data ?? res ?? [];
-      const allItems = Array.isArray(items) ? items : [];
-      allDataRef.current = allItems;
-      const start = (page - 1) * limit;
-      setFixedProperties(allItems.slice(start, start + limit));
-      setTotalCount(allItems.length);
-      setCurrentCount(Math.min(limit, Math.max(0, allItems.length - start)));
+      setFixedProperties(res?.data ?? []);
+      setTotalCount(res?.totalCount ?? 0);
+      setCurrentCount(res?.currentCount ?? 0);
     } catch {
       toast.error("Failed to load properties ❌");
     } finally {
@@ -160,33 +154,43 @@ export default function PropertiesPage() {
   };
 
 
-const handleExport = () => {
-  if (!fixedProperties.length) {
-    toast.error("No data to export ❌");
-    return;
-  }
+const handleExport = async () => {
+   try {
+      setLoading(true);
+      const { city, category, mobile, keyword } = searchRef.current;
+      const res = await getFixedProperties({ export: true, city, category, mobileNumber: mobile, keyword });
+      const allData = res?.data ?? res ?? [];
+      const items = Array.isArray(allData) ? allData : [];
 
-  const exportData = fixedProperties.map((p) => ({
-    City: p.city || "",
-    SectorId: p.sector || "",
-    PlotNumber: p.plotNumber || "",
-    CategoryCode: p.categoryCode || "",
-    SubCategoryCode: p.subCategoryCode || "",
-    Name: p.name || "",
-    FatherName: p.fatherName || "",
-    PermanentAddress: p.permanentAddress || "",
-    CorrespondenceAddress: p.correspondenceAddress || "",
-    MobileNumber: p.mobileNumber || "",
-    Email: p.email || "",
-    ImageUrl: p.imageUrl || "",
-  }));
+      if (!items.length) {
+        toast.error("No data to export ❌");
+        return;
+      }
 
-  const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const exportData = items.map((p) => ({
+        City: p.city || "",
+        SectorId: p.sector || "",
+        PlotNumber: p.plotNumber || "",
+        CategoryCode: p.categoryCode || "",
+        SubCategoryCode: p.subCategoryCode || "",
+        Name: p.name || "",
+        FatherName: p.fatherName || "",
+        PermanentAddress: p.permanentAddress || "",
+        CorrespondenceAddress: p.correspondenceAddress || "",
+        MobileNumber: p.mobileNumber || "",
+        Email: p.email || "",
+        // ImageUrl: p.imageUrl || "",
+      }));
 
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Properties");
-
-  XLSX.writeFile(workbook, "properties.xlsx");
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Properties");
+      XLSX.writeFile(workbook, "properties.xlsx");
+   } catch (err) {
+      toast.error("Export failed ❌");
+   } finally {
+      setLoading(false);
+   }
 };
   const handleImport = async (e) => {
     const file = e.target.files[0];
@@ -348,7 +352,7 @@ const handleExport = () => {
                 <th className="p-3">CorrespondenceAddress</th>
                 <th className="p-3">Mobile</th>
                 <th className="p-3">Email</th>
-                <th className="p-3">Image</th>
+                {/* <th className="p-3">Image</th> */}
                 <th className="p-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -379,7 +383,7 @@ const handleExport = () => {
                     <td className="p-3">{p.correspondenceAddress}</td>
                   <td className="p-3">{p.mobileNumber}</td>
                   <td className="p-3">{p.email}</td>
-                  <td className="p-3">
+                  {/* <td className="p-3">
                     {p.imageUrl ? (
                       <img
                         src={p.imageUrl}
@@ -389,7 +393,7 @@ const handleExport = () => {
                     ) : (
                       <span className="text-gray-600">—</span>
                     )}
-                  </td>
+                  </td> */}
 
                   <td className="p-3 flex gap-2 justify-center">
                     <Button
