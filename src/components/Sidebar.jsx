@@ -285,6 +285,7 @@ const handleDropdownToggle = (menuId) => {
           />
         )}
       </AnimatePresence>
+      
 
       {/* Sidebar */}
       <motion.aside
@@ -297,13 +298,14 @@ const handleDropdownToggle = (menuId) => {
           stiffness: 260,
           damping: 24,
         }}
-        className="fixed left-0 top-0 z-999 flex h-screen flex-col border-r border-[#2A3052] bg-[#171B2E] overflow-hidden"
+        className="fixed left-0 top-0 z-999 flex h-screen flex-col border-r border-[#2A3052] bg-[#171B2E] "
       >
         {/* Logo */}
         <SidebarLogo collapsed={collapsed} />
 
         {/* Profile */}
         {/* <SidebarProfile collapsed={collapsed} /> */}
+        
 
         {/* Menu */}
         <div className="sidebar flex-1 overflow-y-auto overflow-x-hidden py-3">
