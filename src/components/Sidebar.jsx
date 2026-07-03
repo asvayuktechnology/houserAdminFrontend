@@ -221,6 +221,9 @@ function Sidebar({
   //     setIsSidebarOpen(false);
   //   }
   // };
+const handleDropdownToggle = (menuId) => {
+  setOpenMenu((prev) => (prev === menuId ? null : menuId));
+};
 
   const handleLogout = () => {
     localStorage.clear();
@@ -255,18 +258,18 @@ function Sidebar({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const menuItems = [
-    // { id: "home", title: "Home", icon: <Home className="w-5 h-5" />, path: "/user/home" , status:0 },
-    { id: "home", title: "Home", icon: <HouseHeart className="w-5 h-5" />, path: "/admin/dashboard" , status:0 },
-    { id: "challenges", title: "Dealers", icon: <User2Icon className="w-5 h-5" />, path: "/admin/dealers", highlight: true, status:0 },
-    { id: "referral", title: "Add Banner", icon: <Pickaxe className="w-5 h-5" />, path: "/admin/add-banner" , status:0 },
-    { id: "rewards", title: " Lead Properties", icon: <House className="w-5 h-5" />, path: "/admin/lead-properties" , status:0 },
-    { id: "post-properties", title: "Post Properties", icon: <House className="w-5 h-5" />, path: "/admin/post-properties" , status:0 },
-    { id: "plans", title: "Fixed Properties", icon: <LucideHouse className="w-5 h-5" />, path: "/admin/properties" , status:0 },
-    { id: "add-user", title: " Add User", icon: <User className="w-5 h-5" />, path: "/admin/add-user" , status:0 },
-    { id: "add-dealer", title: " Add Dealer", icon: <User className="w-5 h-5" />, path: "/admin/add-dealer" , status:0 },
+  // const menuItems = [
+  //   // { id: "home", title: "Home", icon: <Home className="w-5 h-5" />, path: "/user/home" , status:0 },
+  //   { id: "home", title: "Home", icon: <HouseHeart className="w-5 h-5" />, path: "/admin/dashboard" , status:0 },
+  //   { id: "challenges", title: "Dealers", icon: <User2Icon className="w-5 h-5" />, path: "/admin/dealers", highlight: true, status:0 },
+  //   { id: "referral", title: "Add Banner", icon: <Pickaxe className="w-5 h-5" />, path: "/admin/add-banner" , status:0 },
+  //   { id: "rewards", title: " Lead Properties", icon: <House className="w-5 h-5" />, path: "/admin/lead-properties" , status:0 },
+  //   { id: "post-properties", title: "Post Properties", icon: <House className="w-5 h-5" />, path: "/admin/post-properties" , status:0 },
+  //   { id: "plans", title: "Fixed Properties", icon: <LucideHouse className="w-5 h-5" />, path: "/admin/properties" , status:0 },
+  //   { id: "add-user", title: " Add User", icon: <User className="w-5 h-5" />, path: "/admin/add-user" , status:0 },
+  //   { id: "add-dealer", title: " Add Dealer", icon: <User className="w-5 h-5" />, path: "/admin/add-dealer" , status:0 },
    
-  ];
+  // ];
 
   return (
     <>
