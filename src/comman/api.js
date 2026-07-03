@@ -217,7 +217,7 @@ export const updateBanner = (id, data) => {
   }
 
   return apiFetch(`/admin/banners/${id}`, {
-    method: "PUT",
+    method: "PATCH",
     body,
   });
 };

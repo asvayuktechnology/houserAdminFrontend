@@ -35,10 +35,12 @@ export default function BannersPage() {
   const [banners, setBanners] = useState([]);
   const [form, setForm] = useState({
     title: "",
-    category: "homepage", // ✅ default
+    category: "homepage",
+    link: "", // ✅ default
   });
   const [imageFile, setImageFile] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [editImageFile, setEditImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // ================= FETCH =================
@@ -70,7 +72,7 @@ export default function BannersPage() {
       fd.append("title", form.title);
       fd.append("category", form.category); // ✅ added
       fd.append("images", imageFile);
-
+fd.append("link", form.link);
       await addBanner(fd);
 
       setForm({ title: "", category: "homepage" });
@@ -100,8 +102,19 @@ export default function BannersPage() {
       setLoading(true);
 
       const { id, ...payload } = selected;
+      let body;
 
-      const res = await updateBanner(id, payload);
+      if (editImageFile) {
+        body = new FormData();
+        body.append("title", payload.title);
+        body.append("category", payload.category);
+        body.append("link", payload.link || "");
+        body.append("images", editImageFile);
+      } else {
+        body = payload;
+      }
+
+      const res = await updateBanner(id, body);
 
       setBanners((prev) =>
         prev.map((b) => (b.id === id ? res.data : b))
@@ -109,6 +122,7 @@ export default function BannersPage() {
 
       toast.success("Updated ✨");
       setSelected(null);
+      setEditImageFile(null);
     } catch (err) {
       toast.error(err.message || "Update failed ❌");
     } finally {
@@ -150,7 +164,14 @@ export default function BannersPage() {
           className="w-full text-white"
           onChange={(e) => setImageFile(e.target.files[0])}
         />
-
+            <Input
+              type="url"
+              placeholder="https://example.com"
+              value={form.link}
+              onChange={(e) =>
+                setForm({ ...form, link: e.target.value })
+              }
+            />
         <Button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-500">
           Add Banner
         </Button>
@@ -166,11 +187,21 @@ export default function BannersPage() {
               key={b.id}
               className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden"
             >
-              <img
-                src={b.imageUrl}
-                className="w-full h-40 object-cover"
-                alt={b.title}
-              />
+{b.link ? (
+  <a href={b.link} target="_blank" rel="noopener noreferrer">
+    <img
+      src={b.imageUrl}
+      alt={b.title}
+      className="w-full h-40 object-cover cursor-pointer"
+    />
+  </a>
+) : (
+  <img
+    src={b.imageUrl}
+    alt={b.title}
+    className="w-full h-40 object-cover"
+  />
+)}
 
               <div className="p-3">
                 <p className="font-medium">{b.title}</p>
@@ -223,6 +254,24 @@ export default function BannersPage() {
               <option value="properties">Properties</option>
               <option value="dealer">Dealer</option>
             </Select>
+<Input
+  type="url"
+  placeholder="https://example.com"
+  value={selected.link || ""}
+  onChange={(e) =>
+    setSelected({
+      ...selected,
+      link: e.target.value,
+    })
+  }
+/>
+
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full text-white"
+              onChange={(e) => setEditImageFile(e.target.files[0])}
+            />
 
             <div className="flex gap-2 pt-2">
               <Button className="w-full" onClick={handleSave}>
@@ -230,7 +279,10 @@ export default function BannersPage() {
               </Button>
               <Button
                 className="w-full bg-gray-700"
-                onClick={() => setSelected(null)}
+                onClick={() => {
+                  setSelected(null);
+                  setEditImageFile(null);
+                }}
               >
                 Cancel
               </Button>
