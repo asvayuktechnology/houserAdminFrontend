@@ -14,7 +14,7 @@ import PostPropertiesPage from './pages/PostProperties';
 import LeadPropertiesPage from './pages/LeadProperties';
 
 function App() {
-  const [isSidebarOpen, setisSidebarOpen] = useState(false);
+
 
   const router= createBrowserRouter([
     {
@@ -27,7 +27,7 @@ function App() {
       path:'admin',
        element: (
         <ProtectedRoute>
-          <Layout isSidebarOpen={isSidebarOpen} setisSidebarOpen={setisSidebarOpen}/>
+          <Layout />
          </ProtectedRoute>
       ),
 

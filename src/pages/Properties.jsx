@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Trash2, Pencil, Download, Upload, Search } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   getProperties,
   deleteProperty,
@@ -154,8 +155,8 @@ export default function PropertiesPage() {
   };
 
 
-const handleExport = async () => {
-   try {
+  const handleExport = async () => {
+    try {
       setLoading(true);
       const { city, plotNumber, sector, mobileNumber } = searchRef.current;
       const res = await getFixedProperties({ export: true, city, plotNumber, sector, mobileNumber });
@@ -186,12 +187,12 @@ const handleExport = async () => {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Properties");
       XLSX.writeFile(workbook, "properties.xlsx");
-   } catch (err) {
+    } catch (err) {
       toast.error("Export failed ❌");
-   } finally {
+    } finally {
       setLoading(false);
-   }
-};
+    }
+  };
   const handleImport = async (e) => {
     const file = e.target.files[0];
 
@@ -335,24 +336,24 @@ const handleExport = async () => {
       {loading ? (
         <p className="text-gray-400">Loading...</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-scroll shadow-xl">
           <table className="w-full border border-gray-800 rounded-xl overflow-hidden">
-            <thead className="bg-gray-800 text-left text-sm uppercase text-gray-400">
+            <thead className="border-b border-[#2A3052]">
               <tr>
-                <th className="p-3">#</th>
-                <th className="p-3">City</th>
-                <th className="p-3">Sector</th>
-                <th className="p-3">Plot</th>
-                <th className="p-3">Category Code</th>
-                <th className="p-3">Sub Category</th>
-                <th className="p-3">Name</th>
-                <th className="p-3">Father Name</th>
-                <th className="p-3">PermanentAddress</th>
-                <th className="p-3">CorrespondenceAddress</th>
-                <th className="p-3">Mobile</th>
-                <th className="p-3">Email</th>
-                {/* <th className="p-3">Image</th> */}
-                <th className="p-3 text-center">Actions</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">#</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">City</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Sector</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Plot</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Category Code</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Sub Category</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Name</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Father Name</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">PermanentAddress</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">CorrespondenceAddress</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Mobile</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Email</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Image</th>
+                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70 ">Actions</th>
               </tr>
             </thead>
 
@@ -364,35 +365,41 @@ const handleExport = async () => {
                   </td>
                 </tr>
               ) : fixedProperties?.map((p, i) => (
-                <tr
+                <motion.tr
+                  layout
+                  whileHover={{
+                    scale: 1.005
+                  }}
+                  transition={{
+                    duration: .18
+                  }}
+
                   key={p.id}
-                  className={`border-t border-gray-800 hover:bg-gray-900 ${
-                    i % 2 === 0 ? "bg-gray-950/50" : ""
-                  }`}
-                >
-                  <td className="p-3 text-gray-400">{(page - 1) * limit + i + 1}</td>
-                  <td className="p-3">{p.city}</td>
-                  <td className="p-3">{p.sector}</td>
-                  <td className="p-3">{p.plotNumber}</td>
-                  <td className="p-3">{p.categoryCode}</td>
-                  <td className="p-3">{p.subCategoryCode}</td>
-                  <td className="p-3">{p.name}</td>
-                  <td className="p-3">{p.fatherName}</td>
-                   <td className="p-3">{p.permanentAddress}</td>
-                    <td className="p-3">{p.correspondenceAddress}</td>
-                  <td className="p-3">{p.mobileNumber}</td>
-                  <td className="p-3">{p.email}</td>
-                  {/* <td className="p-3">
+                  className={`group border-b border-[#2A3052] transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
+                    }`}>
+                  <td className="px-6 py-5 whitespace-nowrap text-gray-400">{(page - 1) * limit + i + 1}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.city}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.sector}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.plotNumber}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.categoryCode}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.subCategoryCode}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.name}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.fatherName}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.permanentAddress}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.correspondenceAddress}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.mobileNumber}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">{p.email}</td>
+                  <td className="px-6 py-5 whitespace-nowrap">
                     {p.imageUrl ? (
                       <img
                         src={p.imageUrl}
                         alt="property"
-                        className="w-12 h-12 rounded-lg object-cover"
+                        className="w-14 h-14 rounded-xl object-cover border border-[#2A3052]"
                       />
                     ) : (
                       <span className="text-gray-600">—</span>
                     )}
-                  </td> */}
+                  </td> 
 
                   <td className="p-3 flex gap-2 justify-center">
                     <Button
@@ -406,8 +413,8 @@ const handleExport = async () => {
                       <Pencil className="w-4 h-4 cursor-pointer" />
                     </Button>
                   </td>
-                </tr>
-              ))}
+                </motion.tr>
+            ))}
             </tbody>
           </table>
         </div>
@@ -434,11 +441,10 @@ const handleExport = async () => {
             ) : (
               <Button
                 key={p}
-                className={`${
-                  p === page
-                    ? "bg-indigo-600 hover:bg-indigo-500"
-                    : "bg-gray-700 hover:bg-gray-600"
-                }`}
+                className={`${p === page
+                  ? "bg-indigo-500 hover:bg-indigo-500"
+                  : "bg-gray-700 hover:bg-gray-600"
+                  }`}
                 onClick={() => setPage(p)}
               >
                 {p}
@@ -473,7 +479,7 @@ const handleExport = async () => {
               "permanentAddress",
               "correspondenceAddress",
               "mobileNumber",
-              
+
               "email",
             ].map((field) => (
               <Input

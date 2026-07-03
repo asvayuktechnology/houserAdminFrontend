@@ -3,33 +3,40 @@ import { Toaster } from "react-hot-toast";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { AuthProvider } from "../context/AuthContext";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 
 
-
-const Layout = ({ isSidebarOpen, setisSidebarOpen }) => {
-
+const Layout = () => {
+  const [isSidebarOpen, setisSidebarOpen] = useState(true);
+  console.log("Sidebar Open:", isSidebarOpen);
   return (
     <div>
       {/* ✅ Toaster */}
       <Toaster position="top-center" />
 
 
-      <div>
-        
-        {
-isSidebarOpen == true && (
- <Sidebar
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setisSidebarOpen}
-          />
-)
-         
-        }
-       
- 
+      <div className="flex  min-h-screen">
 
-        <div>
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setisSidebarOpen}
+        />
+
+
+
+        <motion.div
+          animate={{
+            marginLeft: isSidebarOpen ? 270 : 80,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 220,
+            damping: 28,
+          }}
+          className={`min-h-screen bg-[#0F1324] p-6 transition-all duration-300 ${isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-auto" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"}`}
+        >
           <Header
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setisSidebarOpen}
@@ -37,16 +44,17 @@ isSidebarOpen == true && (
 
           <div
             style={{ width: "100%" }}
-            onClick={() => setisSidebarOpen(false)}
-          >
             
+
+          >
+
             <Outlet />
-         
-             
+
+
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </div >
   );
 };
 
