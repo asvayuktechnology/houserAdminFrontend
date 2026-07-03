@@ -6,14 +6,14 @@ import { useAuth } from "../context/AuthContext";
 
 const Input = ({ ...props }) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+    className="w-full px-3 py-2 text-sm rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
     {...props}
   />
 );
 
 const Button = ({ children, className = "", ...props }) => (
   <button
-    className={`w-full px-3 py-2 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 ${className}`}
+    className={`w-full p-3  rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 ${className}`}
     {...props}
   >
     {children}
@@ -27,7 +27,7 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
 
-    const { setIsAuth} = useAuth();
+  const { setIsAuth } = useAuth();
 
   const validate = () => {
     let newErrors = {};
@@ -77,13 +77,26 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
-      <div className="w-full max-w-md bg-gray-900 p-6 rounded-2xl border border-gray-800 space-y-4">
+      <div className="relative w-full max-w-xl bg-gray-800 p-6 rounded-2xl border border-gray-800 space-y-4">
+        <div className="absolute end-0 top-0" style={{ width: 200 }}>
+  <img
+    alt="auth-card-bg"
+    src="/auth-card-bg.svg"
+  />
+</div>
+
         <Toaster position="top-center" />
+        <img src="/houserdemologo.png" alt="Logo" className="mx-auto h-16 w-16" />
         <h1 className="text-2xl font-bold text-center">Admin Login</h1>
+        <p className="text-center text-sm max-w-[85%] mx-auto">Let’s get you signed in. Enter your email and password to continue.</p>
 
         {/* Email */}
         <div>
+          <label htmlFor="email" className="block text-sm font-medium text-white/60 mb-1">
+            Email
+          </label>
           <Input
+            name="email"
             type="email"
             placeholder="Email"
             value={form.email}
@@ -98,7 +111,11 @@ export default function AdminLogin() {
 
         {/* Password */}
         <div>
+          <label htmlFor="password" className="block text-sm font-medium text-white/60 mb-1">
+            Password
+          </label>
           <Input
+            name="password"
             type="password"
             placeholder="Password"
             value={form.password}
@@ -110,6 +127,27 @@ export default function AdminLogin() {
             <p className="text-red-400 text-sm mt-1">{errors.password}</p>
           )}
         </div>
+        <div className="mb-5 flex items-center justify-between gap-2 text-sm">
+          <div className="flex items-start gap-2 lg:items-center">
+            <input
+              className="form-checkbox form-checkbox-light mt-1 size-4.25 lg:mt-0"
+              id="rememberMe"
+              type="checkbox"
+              defaultChecked=""
+            />
+            <label className="form-check-label" htmlFor="rememberMe">
+              Keep me signed in
+            </label>
+          </div>
+          <a
+            className="text-default-400 underline underline-offset-4"
+            href="/ubold/tailwind/react/auth/reset-pass"
+            data-discover="true"
+          >
+            Forgot Password?
+          </a>
+        </div>
+
 
         <Button onClick={handleSubmit} disabled={loading}>
           {loading ? "Logging in..." : "Login"}
