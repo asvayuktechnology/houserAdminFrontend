@@ -39,9 +39,9 @@ export default function PropertiesPage() {
 
   // Search state
   const [searchCity, setSearchCity] = useState("");
-  const [searchCategory, setSearchCategory] = useState("");
-  const [searchMobile, setSearchMobile] = useState("");
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchPlotNumber, setSearchPlotNumber] = useState("");
+  const [searchSector, setSearchSector] = useState("");
+  const [searchMobileNumber, setSearchMobileNumber] = useState("");
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -52,13 +52,13 @@ export default function PropertiesPage() {
 
 
 
-  const searchRef = useRef({ city: "", category: "", mobile: "", keyword: "" });
+  const searchRef = useRef({ city: "", plotNumber: "", sector: "", mobileNumber: "" });
 
   const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
-      const { city, category, mobile, keyword } = searchRef.current;
-      const params = { page, limit, city, category, mobileNumber: mobile, keyword };
+      const { city, plotNumber, sector, mobileNumber } = searchRef.current;
+      const params = { page, limit, city, plotNumber, sector, mobileNumber };
       const res = await getFixedProperties(params);
       setFixedProperties(res?.data ?? []);
       setTotalCount(res?.totalCount ?? 0);
@@ -76,22 +76,22 @@ export default function PropertiesPage() {
 
   // Refetch when all search inputs become empty after a previous search
   useEffect(() => {
-    const hasInputValues = searchCity || searchCategory || searchMobile || searchKeyword;
-    const hasRefValues = searchRef.current.city || searchRef.current.category || searchRef.current.mobile || searchRef.current.keyword;
+    const hasInputValues = searchCity || searchPlotNumber || searchSector || searchMobileNumber;
+    const hasRefValues = searchRef.current.city || searchRef.current.plotNumber || searchRef.current.sector || searchRef.current.mobileNumber;
 
     if (!hasInputValues && hasRefValues) {
-      searchRef.current = { city: "", category: "", mobile: "", keyword: "" };
+      searchRef.current = { city: "", plotNumber: "", sector: "", mobileNumber: "" };
       setPage(1);
       setRefreshKey((k) => k + 1);
     }
-  }, [searchCity, searchCategory, searchMobile, searchKeyword]);
+  }, [searchCity, searchPlotNumber, searchSector, searchMobileNumber]);
 
   const handleSearch = () => {
     searchRef.current = {
       city: searchCity,
-      category: searchCategory,
-      mobile: searchMobile,
-      keyword: searchKeyword,
+      plotNumber: searchPlotNumber,
+      sector: searchSector,
+      mobileNumber: searchMobileNumber,
     };
     if (page !== 1) {
       setPage(1);
@@ -157,8 +157,8 @@ export default function PropertiesPage() {
 const handleExport = async () => {
    try {
       setLoading(true);
-      const { city, category, mobile, keyword } = searchRef.current;
-      const res = await getFixedProperties({ export: true, city, category, mobileNumber: mobile, keyword });
+      const { city, plotNumber, sector, mobileNumber } = searchRef.current;
+      const res = await getFixedProperties({ export: true, city, plotNumber, sector, mobileNumber });
       const allData = res?.data ?? res ?? [];
       const items = Array.isArray(allData) ? allData : [];
 
@@ -289,31 +289,30 @@ const handleExport = async () => {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Category</label>
+          <label className="text-xs text-gray-400">Plot Number</label>
           <Input
-            placeholder="Category"
-            value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
+            placeholder="Plot Number"
+            value={searchPlotNumber}
+            onChange={(e) => setSearchPlotNumber(e.target.value)}
             onKeyDown={handleKeyDown}
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Mobile</label>
+          <label className="text-xs text-gray-400">Sector</label>
+          <Input
+            placeholder="Sector"
+            value={searchSector}
+            onChange={(e) => setSearchSector(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">Mobile Number</label>
           <Input
             placeholder="Mobile Number"
-            value={searchMobile}
-            onChange={(e) => setSearchMobile(e.target.value)}
+            value={searchMobileNumber}
+            onChange={(e) => setSearchMobileNumber(e.target.value)}
             onKeyDown={handleKeyDown}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Keyword</label>
-          <Input
-            placeholder="Search By Email & Name"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            onKeyDown={handleKeyDown}
-
           />
         </div>
         <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>

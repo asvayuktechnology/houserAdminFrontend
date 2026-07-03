@@ -307,7 +307,7 @@ const handleCopyPhone = async () => {
             onKeyDown={handleKeyDown}
           />
         </div> */}
-        <div className="flex flex-col gap-1">
+        {/* <div className="flex flex-col gap-1">
           <label className="text-xs text-gray-400">Keyword</label>
           <Input
             placeholder="Search By Address & Rating"
@@ -315,7 +315,7 @@ const handleCopyPhone = async () => {
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-        </div>
+        </div> */}
         <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
           <Search className="w-4 h-4 cursor-pointer" />
           Search
