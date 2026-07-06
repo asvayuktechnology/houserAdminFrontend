@@ -116,22 +116,22 @@ export default function UsersPage() {
 
   // ✅ DELETE
   const handleDelete = async (id) => {
-    // try {
-    //   await deleteUser(id);
-    //   setUsers((prev) => prev.filter((u) => u.id !== id));
-    //   toast.success("Deleted ✅");
-    //   setDeleteTarget(null);
-    // } catch {
-    //   toast.error("Delete failed ❌");
-    // }
-     toast.success("Working in Progress ✅");
+    try {
+      await deleteUser(id);
+      setUsers((prev) => prev.filter((u) => u.id !== id));
+      toast.success("Deleted ✅");
+      setDeleteTarget(null);
+    } catch {
+      toast.error("Delete failed ❌");
+    }
+    
   };
 
   // ✅ EDIT OPEN
   const handleEdit = (user) => {
-    // setSelected({ ...user, password: "", confirm_password: "" });
-    // setEditErrors({});
-     toast.success("Working in Progress ✅");
+    setSelected({ ...user, password: "", confirm_password: "" });
+    setEditErrors({});
+    
   };
 
   // ✅ UPDATE

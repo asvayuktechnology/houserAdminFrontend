@@ -12,6 +12,7 @@ import AdminLogin from './pages/AdminLoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PostPropertiesPage from './pages/PostProperties';
 import LeadPropertiesPage from './pages/LeadProperties';
+import NotFound from './pages/NotFound';
 
 function App() {
 
@@ -67,6 +68,11 @@ function App() {
       },
     ]
 
+    },
+
+    {
+      path: "*",
+      element: <NotFound />
     }
   ])
  return <RouterProvider router={router} />;
