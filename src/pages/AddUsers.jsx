@@ -378,6 +378,7 @@ export default function UsersPage() {
             >
               <option value="user">User</option>
               <option value="dealer">Dealer</option>
+                <option value="admin">admin</option>
             </select>
 
             {renderField("Password", "password", "password")}

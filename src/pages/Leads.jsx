@@ -7,7 +7,7 @@ import {
   allDeleteLeads,
 } from "../comman/api";
 import toast from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 const Button = ({ children, className = "", ...props }) => (
   <button
     className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
@@ -25,6 +25,7 @@ const Input = (props) => (
 );
 
 export default function LeadsPage() {
+  const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [selected, setSelected] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
@@ -38,6 +39,7 @@ export default function LeadsPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   const [totalCount, setTotalCount] = useState(0);
+  const [currentCount, setCurrentCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const searchRef = useRef({ name: "", city: "", phone: "" });
@@ -50,6 +52,7 @@ export default function LeadsPage() {
       const res = await getLeads(params);
       setLeads(res?.data ?? []);
       setTotalCount(res?.totalCount ?? 0);
+      setCurrentCount(res?.currentCount ?? 0);
     } catch {
       toast.error("Failed to load leads");
     } finally {
@@ -202,10 +205,16 @@ export default function LeadsPage() {
           <Search className="w-4 h-4 cursor-pointer" />
           Search
         </Button>
-        <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
+        {/* <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
           <Trash2 className="w-4 h-4 cursor-pointer" />
           All Delete
-        </Button>
+        </Button> */}
+         <Button
+    className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
+    onClick={() => navigate("/admin/add-lead")}
+  >
+    Create
+  </Button>
       </div>
 
       <div className="text-sm text-gray-400 mb-3">
@@ -248,7 +257,7 @@ export default function LeadsPage() {
                   }`}
                 >
                   <td className="p-3 text-gray-400">{(page - 1) * limit + i + 1}</td>
-                  <td className="p-3 font-semibold">{l.fullname || "-"}</td>
+                  <td className="p-3 font-semibold">{l.fullName || "-"}</td>
                   <td className="p-3">
                     <span
                       className="bg-green-900 text-green-400 px-2 py-1 rounded-lg text-xs cursor-pointer"
@@ -267,7 +276,7 @@ export default function LeadsPage() {
                   <td className="p-3 max-w-xs truncate">{l.comment || "-"}</td>
                   <td className="p-3 flex gap-2 justify-center">
                     <Button
-                      className="bg-red-600 hover:bg-red-500"
+                      className="bg-red-600 hover:bg-red-500 cursor-pointer"
                       onClick={() => handleDelete(l.id)}
                     >
                       <Trash2 className="w-4 h-4 cursor-pointer" />
@@ -331,7 +340,7 @@ export default function LeadsPage() {
             <h2 className="text-xl font-semibold">Edit Lead</h2>
 
             {[
-              { field: "fullname", label: "Full Name" },
+              { field: "fullName", label: "Full Name" },
               { field: "phoneNo", label: "Phone No" },
               { field: "city", label: "City" },
               { field: "sector", label: "Sector" },
@@ -397,15 +406,15 @@ export default function LeadsPage() {
             <p className="text-gray-400 text-sm">
               This lead will be deleted permanently.
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-3 justify-center cursor-pointer">
               <Button
-                className="bg-red-600 hover:bg-red-500"
+                className="bg-red-600 hover:bg-red-500 cursor-pointer"
                 onClick={confirmDelete}
               >
                 Yes, Delete
               </Button>
               <Button
-                className="bg-gray-700"
+                className="bg-gray-700 cursor-pointer"
                 onClick={() => setDeleteId(null)}
               >
                 Cancel
