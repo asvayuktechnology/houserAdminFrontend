@@ -6,6 +6,7 @@ import {
   Settings2,
   Save,
   Loader2,
+  ShieldClose,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -37,6 +38,7 @@ const tabs = [
   // { id: "about", label: "About", icon: Info },
   // { id: "privacy", label: "Privacy Policy", icon: Shield },
   { id: "logo", label: "Logo Upload", icon: Upload },
+  { id: "smtp", label: "SMTP Settings", icon: Shield },
 ];
 
 export default function SettingsPage() {
@@ -48,6 +50,16 @@ export default function SettingsPage() {
     siteEmail: "",
     sitePhone: "",
     siteAddress: "",
+  });
+
+  const [smtp, setSmtp] = useState({
+    host: "",
+    port: "587",
+    username: "",
+    password: "",
+    encryption: "tls",
+    fromEmail: "",
+    fromName: "",
   });
 
   // About state
@@ -104,11 +116,10 @@ export default function SettingsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition ${
-                activeTab === tab.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-white border border-gray-800"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition ${activeTab === tab.id
+                ? "bg-blue-600 text-white"
+                : "bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-white border border-gray-800"
+                }`}
             >
               <Icon size={16} />
               {tab.label}
@@ -172,7 +183,7 @@ export default function SettingsPage() {
         )}
 
 
-      
+
 
         {/* LOGO UPLOAD */}
         {activeTab === "logo" && (
@@ -198,6 +209,173 @@ export default function SettingsPage() {
                   />
                 </div>
               )}
+            </div>
+          </>
+        )}
+
+        {activeTab === "smtp" && (
+          <>
+            <h2 className="text-2xl font-semibold">
+              SMTP Configuration
+            </h2>
+
+            <p className="mt-2 text-gray-400">
+              Configure the outgoing mail server used
+              for authentication emails and notifications.
+            </p>
+
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+              {/* SMTP Host */}
+              <div>
+                <label className="mb-2 block text-sm text-gray-400">
+                  SMTP Host
+                </label>
+
+                <Input
+                  placeholder="smtp.gmail.com"
+                  value={smtp.host}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      host: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Port */}
+              <div>
+                <label className="mb-2 block text-sm text-gray-400">
+                  SMTP Port
+                </label>
+
+                <Input
+                  placeholder="587"
+                  value={smtp.port}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      port: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Username */}
+              <div>
+                <label className="mb-2 block text-sm text-gray-400">
+                  Username
+                </label>
+
+                <Input
+                  placeholder="example@gmail.com"
+                  value={smtp.username}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      username: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="mb-2 block text-sm text-gray-400">
+                  Password
+                </label>
+
+                <Input
+                  type="password"
+                  placeholder="********"
+                  value={smtp.password}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      password: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* From Email */}
+              <div>
+                <label className="mb-2 block text-sm text-gray-400">
+                  From Email
+                </label>
+
+                <Input
+                  placeholder="noreply@example.com"
+                  value={smtp.fromEmail}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      fromEmail: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* From Name */}
+              <div>
+                <label className="mb-2 block text-sm text-gray-400">
+                  From Name
+                </label>
+
+                <Input
+                  placeholder="Sky Heights"
+                  value={smtp.fromName}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      fromName: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Encryption */}
+              <div className="md:col-span-2">
+                <label className="mb-2 block text-sm text-gray-400">
+                  Encryption
+                </label>
+
+                <select
+                  value={smtp.encryption}
+                  onChange={(e) =>
+                    setSmtp({
+                      ...smtp,
+                      encryption: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-xl border border-gray-700 bg-gray-800 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  <option value="tls">TLS</option>
+                  <option value="ssl">SSL</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+
+            </div>
+
+            {/* Test Email */}
+            <div className="mt-8 flex items-center justify-between rounded-2xl border border-blue-600/20 bg-blue-600/5 p-5">
+
+              <div>
+                <h3 className="font-medium text-white">
+                  Test SMTP Connection
+                </h3>
+
+                <p className="mt-1 text-sm text-gray-400">
+                  Send a test email to verify your SMTP configuration.
+                </p>
+              </div>
+
+              <Button className="bg-blue-600 hover:bg-blue-500">
+                Send Test Email
+              </Button>
+
             </div>
           </>
         )}

@@ -26,16 +26,16 @@ const Layout = () => {
 
 
 
-        <motion.div
+        <div
           animate={{
             marginLeft: isSidebarOpen ? 270 : 80,
           }}
-          transition={{
-            type: "spring",
-            stiffness: 220,
-            damping: 28,
-          }}
-          className={`min-h-screen bg-[#0F1324] p-6 transition-all duration-300 ${isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-auto" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"}`}
+          // transition={{
+          //   type: "spring",
+          //   stiffness: 220,
+          //   damping: 28,
+          // }}
+          className={`min-h-screen bg-[#0F1324] w-full p-6 transition-all duration-100 ml-auto ${isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-auto" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"}`}
         >
           <Header
             isSidebarOpen={isSidebarOpen}
@@ -44,7 +44,7 @@ const Layout = () => {
 
           <div
             style={{ width: "100%" }}
-            
+
 
           >
 
@@ -52,7 +52,7 @@ const Layout = () => {
 
 
           </div>
-        </motion.div>
+        </div>
       </div>
     </div >
   );
