@@ -276,4 +276,70 @@ export const allDeleteProperties = () =>
     method: "DELETE",
   });
 
+// 📋 LEADS
+export const getLeads = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/admin/leads${qs ? "?" + qs : ""}`);
+};
+
+export const addLead = (data) =>
+  apiFetch("/admin/create-lead", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const deleteLead = (id) =>
+  apiFetch(`/admin/leads/${id}`, {
+    method: "DELETE",
+  });
+
+export const updateLead = (id, data) =>
+  apiFetch(`/admin/leads/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+
+export const allDeleteLeads = () =>
+  apiFetch("/admin/delete-all-leads", {
+    method: "DELETE",
+  });
+
+
+// 📝 POSTS
+export const getPosts = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/admin/posts${qs ? "?" + qs : ""}`);
+};
+
+export const addPost = (data) =>
+  apiFetch("/admin/create-post", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const deletePost = (id) =>
+  apiFetch(`/admin/posts/${id}`, {
+    method: "DELETE",
+  });
+
+export const updatePost = (id, data) =>
+  apiFetch(`/admin/posts/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+
+export const allDeletePosts = () =>
+  apiFetch("/admin/delete-all-posts", {
+    method: "DELETE",
+  });
+
+
  export const logout=()=>apiFetch("/logout")

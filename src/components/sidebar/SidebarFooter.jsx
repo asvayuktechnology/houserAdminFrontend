@@ -1,17 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { LogOut, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function SidebarFooter({
   collapsed,
   handleLogout,
 }) {
+  const navigate = useNavigate();
   return (
     <div className="border-t border-[#2A3052] bg-[#171B2E] p-3">
       {/* Settings */}
       <motion.button
         whileHover={{ x: 3 }}
         whileTap={{ scale: 0.98 }}
+        onClick={() => navigate("/admin/settings")}
         className={`
           mb-2
           flex

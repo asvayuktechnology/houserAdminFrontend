@@ -153,6 +153,40 @@ export const menuSections = [
         ],
       },
       {
+        id: "leads",
+        title: "Leads",
+        icon: Clipboard,
+        children: [
+          {
+            id: "all-leads",
+            title: "All Leads",
+            path: "/admin/leads",
+          },
+          {
+            id: "add-lead",
+            title: "Add Lead",
+            path: "/admin/add-lead",
+          },
+        ],
+      },
+      {
+        id: "posts",
+        title: "Posts",
+        icon: Clipboard,
+        children: [
+          {
+            id: "all-posts",
+            title: "All Posts",
+            path: "/admin/posts",
+          },
+          {
+            id: "add-post",
+            title: "Add Post",
+            path: "/admin/add-post",
+          },
+        ],
+      },
+      {
         id: "citylisting",
         title: "City Listings",
         icon: LucideTowerControl,

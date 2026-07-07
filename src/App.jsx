@@ -5,6 +5,10 @@ import Layout from './components/Layout';
 import { useState } from 'react';
 import PropertiesPage from './pages/Properties';
 import DealersPage from './pages/Dealers';
+import LeadsPage from './pages/Leads';
+import { AddLeadPage } from './pages/AddLead';
+import PostsPage from './pages/Posts';
+import { AddPostPage } from './pages/AddPost';
 import BannersPage from './pages/AddBanner';
 import UsersPage from './pages/AddUsers';
 import { AddDealerPage } from './pages/AddDealer';
@@ -12,6 +16,7 @@ import AdminLogin from './pages/AdminLoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PostPropertiesPage from './pages/PostProperties';
 import LeadPropertiesPage from './pages/LeadProperties';
+import SettingsPage from './pages/Settings';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -46,6 +51,22 @@ function App() {
         element: <DealersPage />
       },
       {
+        path:'leads',
+        element: <LeadsPage />
+      },
+      {
+        path:'add-lead',
+        element: <AddLeadPage />
+      },
+      {
+        path:'posts',
+        element: <PostsPage />
+      },
+      {
+        path:'add-post',
+        element: <AddPostPage />
+      },
+      {
         path:'add-banner',
         element: <BannersPage />
       },
@@ -65,6 +86,10 @@ function App() {
       {
         path:'post-properties',
         element: <PostPropertiesPage />
+      },
+      {
+        path:'settings',
+        element: <SettingsPage />
       },
     ]
 
