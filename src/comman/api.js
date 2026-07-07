@@ -343,3 +343,13 @@ export const allDeletePosts = () =>
 
 
  export const logout=()=>apiFetch("/logout")
+
+
+// ⚙️ SETTINGS
+export const getSettings = () => apiFetch("/setting");
+
+export const updateSettings = (formData) =>
+  apiFetch("/admin/setting", {
+    method: "PATCH",
+    body: formData,
+  });

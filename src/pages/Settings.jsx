@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Info,
   Shield,
@@ -9,6 +9,7 @@ import {
   ShieldClose,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { getSettings, updateSettings } from "../comman/api";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
@@ -46,7 +47,7 @@ export default function SettingsPage() {
 
   // General Settings state
   const [general, setGeneral] = useState({
-    siteName: "",
+  
     siteEmail: "",
     sitePhone: "",
     siteAddress: "",
@@ -78,6 +79,50 @@ export default function SettingsPage() {
   const [logoPreview, setLogoPreview] = useState(null);
 
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await getSettings();
+        const data = res.data || res;
+
+        setGeneral({
+     
+          siteEmail: data.email || "",
+          sitePhone: data.phoneNo || "",
+          siteAddress: data.address || "",
+        });
+
+        if (data.smtp) {
+          const enc = data.smtp.encryption;
+          let encValue = "tls";
+          if (enc?.ssl) encValue = "ssl";
+          else if (!enc?.tls && !enc?.ssl) encValue = "none";
+
+          setSmtp({
+            host: data.smtp.host || "",
+            port: String(data.smtp.port || "587"),
+            username: data.smtp.username || "",
+            password: data.smtp.password || "",
+            encryption: encValue,
+            fromEmail: data.smtp.fromEmail || "",
+            fromName: data.smtp.fromName || "",
+          });
+        }
+
+        if (data.logo) {
+          setLogoPreview(data.logo);
+        }
+      } catch (err) {
+        toast.error(err.message || "Failed to load settings");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -91,10 +136,30 @@ export default function SettingsPage() {
     try {
       setSaving(true);
 
-      // TODO: Replace with actual API calls when endpoints are available
-      // await updateSettings(activeTab, payload);
+      const formData = new FormData();
+      formData.append("email", general.siteEmail);
+      formData.append("phoneNo", general.sitePhone);
+      formData.append("address", general.siteAddress);
 
-      await new Promise((r) => setTimeout(r, 500));
+      if (logoFile) {
+        formData.append("logo", logoFile);
+      }
+
+      const encryptionObj = {
+        tls: smtp.encryption === "tls",
+        ssl: smtp.encryption === "ssl",
+      };
+      formData.append("smtp", JSON.stringify({
+        host: smtp.host,
+        port: Number(smtp.port),
+        username: smtp.username,
+        password: smtp.password,
+        encryption: encryptionObj,
+        fromEmail: smtp.fromEmail,
+        fromName: smtp.fromName,
+      }));
+
+      await updateSettings(formData);
 
       toast.success("Settings saved successfully");
     } catch (err) {
@@ -108,6 +173,13 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
       <h1 className="text-3xl font-bold mb-6 mt-14">Settings</h1>
 
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 size={32} className="animate-spin text-blue-500" />
+          <span className="ml-3 text-gray-400">Loading settings...</span>
+        </div>
+      ) : (
+      <>
       {/* TAB BAR */}
       <div className="flex gap-2 mb-6 overflow-x-auto">
         {tabs.map((tab) => {
@@ -118,7 +190,7 @@ export default function SettingsPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition ${activeTab === tab.id
                 ? "bg-blue-600 text-white"
-                : "bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-white border border-gray-800"
+                : "bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-white border cursor-pointer border-gray-800 cursor-pointer"
                 }`}
             >
               <Icon size={16} />
@@ -129,22 +201,13 @@ export default function SettingsPage() {
       </div>
 
       {/* TAB CONTENT */}
-      <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 space-y-4">
+      <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 space-y-4 ">
         {/* GENERAL SETTINGS */}
         {activeTab === "general" && (
           <>
-            <h2 className="text-lg font-semibold mb-4">General Settings</h2>
+            <h2 className="text-lg font-semibold mb-4 ">General Settings</h2>
             <div className="space-y-3">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Site Name</label>
-                <Input
-                  placeholder="Enter site name"
-                  value={general.siteName}
-                  onChange={(e) =>
-                    setGeneral({ ...general, siteName: e.target.value })
-                  }
-                />
-              </div>
+            
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Contact Email</label>
                 <Input
@@ -360,7 +423,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Test Email */}
-            <div className="mt-8 flex items-center justify-between rounded-2xl border border-blue-600/20 bg-blue-600/5 p-5">
+            {/* <div className="mt-8 flex items-center justify-between rounded-2xl border border-blue-600/20 bg-blue-600/5 p-5">
 
               <div>
                 <h3 className="font-medium text-white">
@@ -376,16 +439,16 @@ export default function SettingsPage() {
                 Send Test Email
               </Button>
 
-            </div>
+            </div> */}
           </>
         )}
 
         {/* SAVE BUTTON */}
-        <div className="pt-4 border-t border-gray-800">
+        <div className="pt-4 border-t border-gray-800 ">
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="bg-blue-600 hover:bg-blue-500 px-6 py-2.5"
+            className="bg-blue-600 hover:bg-blue-500 px-6 py-2.5 cursor-pointer"
           >
             {saving ? (
               <span className="flex items-center gap-2">
@@ -401,6 +464,8 @@ export default function SettingsPage() {
           </Button>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }
