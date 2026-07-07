@@ -7,6 +7,7 @@ import {
   allDeletePosts,
 } from "../comman/api";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
@@ -25,6 +26,7 @@ const Input = (props) => (
 );
 
 export default function PostsPage() {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [selected, setSelected] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
@@ -202,10 +204,16 @@ export default function PostsPage() {
           <Search className="w-4 h-4 cursor-pointer" />
           Search
         </Button>
-        <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
+        {/* <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
           <Trash2 className="w-4 h-4 cursor-pointer" />
           All Delete
-        </Button>
+        </Button> */}
+        <Button
+    className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
+    onClick={() => navigate("/admin/add-post")}
+  >
+    Create
+  </Button>
       </div>
 
       <div className="text-sm text-gray-400 mb-3">
@@ -248,7 +256,7 @@ export default function PostsPage() {
                   }`}
                 >
                   <td className="p-3 text-gray-400">{(page - 1) * limit + i + 1}</td>
-                  <td className="p-3 font-semibold">{p.fullname || "-"}</td>
+                  <td className="p-3 font-semibold">{p.fullName || "-"}</td>
                   <td className="p-3">
                     <span
                       className="bg-green-900 text-green-400 px-2 py-1 rounded-lg text-xs cursor-pointer"
@@ -331,7 +339,7 @@ export default function PostsPage() {
             <h2 className="text-xl font-semibold">Edit Post</h2>
 
             {[
-              { field: "fullname", label: "Full Name" },
+              { field: "fullName", label: "Full Name" },
               { field: "phoneNo", label: "Phone No" },
               { field: "city", label: "City" },
               { field: "sector", label: "Sector" },
@@ -399,13 +407,13 @@ export default function PostsPage() {
             </p>
             <div className="flex gap-3 justify-center">
               <Button
-                className="bg-red-600 hover:bg-red-500"
+                className="bg-red-600 hover:bg-red-500 cursor-pointer"
                 onClick={confirmDelete}
               >
                 Yes, Delete
               </Button>
               <Button
-                className="bg-gray-700"
+                className="bg-gray-700 cursor-ponter"
                 onClick={() => setDeleteId(null)}
               >
                 Cancel
