@@ -9,6 +9,7 @@ import {
   useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import Card from "../components/ui/Card";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
@@ -165,97 +166,99 @@ export function AddDealerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
-      <h1 className="text-3xl font-bold text-center mt-14 mb-6">
-        Add Dealer (Auto Location)
-      </h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+      <div className="max-w-xl mx-auto   mt-14 mb-6">
+        
+      <Card showHeader={true} title="Add Dealer (Auto Location)">
 
-      <div className="max-w-xl mx-auto bg-gray-900 p-6 rounded-2xl border border-gray-800 space-y-4">
+        <div className=" p-6 rounded-2xl space-y-4">
 
-        <Input
-          placeholder="Company Name *"
-          value={form.name}
-          onChange={(e) =>
-            setForm({ ...form, name: e.target.value })
-          }
-        />
+          <Input
+            placeholder="Company Name *"
+            value={form.name}
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
+          />
 
-        <Input
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
+          <Input
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+          />
 
-        <Input
-          placeholder="Contact *"
-          value={form.contact}
-          onChange={(e) =>
-            setForm({ ...form, contact: e.target.value })
-          }
-        />
+          <Input
+            placeholder="Contact *"
+            value={form.contact}
+            onChange={(e) =>
+              setForm({ ...form, contact: e.target.value })
+            }
+          />
 
-        <Input
-          placeholder="Address (type full address...)"
-          value={form.address}
-          onChange={(e) =>
-            setForm({ ...form, address: e.target.value })
-          }
-        />
+          <Input
+            placeholder="Address (type full address...)"
+            value={form.address}
+            onChange={(e) =>
+              setForm({ ...form, address: e.target.value })
+            }
+          />
 
-        {loadingLocation && (
-          <p className="text-xs text-yellow-400">
-            Fetching location...
-          </p>
-        )}
+          {loadingLocation && (
+            <p className="text-xs text-yellow-400">
+              Fetching location...
+            </p>
+          )}
 
-        <Input
-          placeholder="Area"
-          value={form.area}
-          onChange={(e) =>
-            setForm({ ...form, area: e.target.value })
-          }
-        />
+          <Input
+            placeholder="Area"
+            value={form.area}
+            onChange={(e) =>
+              setForm({ ...form, area: e.target.value })
+            }
+          />
 
-        {/* 📍 Current location */}
-        <Button
-          type="button"
-          className="w-full bg-green-600"
-          onClick={getCurrentLocation}
-        >
-          Use Current Location 📍
-        </Button>
-
-        {/* 🗺️ MAP */}
-        <div className="rounded-xl overflow-hidden">
-          <MapContainer
-            center={position}
-            zoom={13}
-            style={{ height: "250px", width: "100%" }}
+          {/* 📍 Current location */}
+          <Button
+            type="button"
+            className="w-full bg-green-600"
+            onClick={getCurrentLocation}
           >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            Use Current Location 📍
+          </Button>
 
-            <ChangeMapView position={position} />
+          {/* 🗺️ MAP */}
+          <div className="rounded-xl overflow-hidden">
+            <MapContainer
+              center={position}
+              zoom={13}
+              style={{ height: "250px", width: "100%" }}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            <LocationPicker
-              position={position}
-              setPosition={setPosition}
-              setForm={setForm}
-            />
-          </MapContainer>
+              <ChangeMapView position={position} />
+
+              <LocationPicker
+                position={position}
+                setPosition={setPosition}
+                setForm={setForm}
+              />
+            </MapContainer>
+          </div>
+
+          {/* 📍 Show coords */}
+          {form.lat && (
+            <p className="text-sm text-gray-400 text-center">
+              Lat: {form.lat} | Lng: {form.lng}
+            </p>
+          )}
+
+          <Button onClick={handleSubmit} className="w-full">
+            Save Dealer
+          </Button>
         </div>
-
-        {/* 📍 Show coords */}
-        {form.lat && (
-          <p className="text-sm text-gray-400 text-center">
-            Lat: {form.lat} | Lng: {form.lng}
-          </p>
-        )}
-
-        <Button onClick={handleSubmit} className="w-full">
-          Save Dealer
-        </Button>
+      </Card>
       </div>
     </div>
   );

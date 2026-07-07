@@ -76,7 +76,7 @@ export default function AdminLogin() {
   // }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
       <div className="relative w-full max-w-xl bg-gray-800 p-6 rounded-2xl border border-gray-800 space-y-4">
         <div className="absolute end-0 top-0" style={{ width: 200 }}>
   <img

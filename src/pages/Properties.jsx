@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 const Button = ({ children, className = "", ...props }) => (
   <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
+    className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
     {...props}
   >
     {children}
@@ -24,7 +24,7 @@ const Button = ({ children, className = "", ...props }) => (
 
 const Input = (props) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
     {...props}
   />
 );
@@ -245,7 +245,7 @@ export default function PropertiesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
 
       {/* HEADER + EXPORT */}
       <div className="flex justify-between items-center mb-6 mt-14">
@@ -337,7 +337,7 @@ export default function PropertiesPage() {
         <p className="text-gray-400">Loading...</p>
       ) : (
         <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-scroll shadow-xl">
-          <table className="w-full border border-gray-800 rounded-xl overflow-hidden">
+          <table className="w-full border border-gray-800 rounded-md overflow-hidden">
             <thead className="border-b border-[#2A3052]">
               <tr>
                 <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">#</th>
@@ -375,26 +375,26 @@ export default function PropertiesPage() {
                   }}
 
                   key={p.id}
-                  className={`group border-b border-[#2A3052] transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
+                  className={`group text-sm border-b border-[#2A3052] transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
                     }`}>
-                  <td className="px-6 py-5 whitespace-nowrap text-gray-400">{(page - 1) * limit + i + 1}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.city}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.sector}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.plotNumber}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.categoryCode}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.subCategoryCode}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.name}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.fatherName}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.permanentAddress}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.correspondenceAddress}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.mobileNumber}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">{p.email}</td>
-                  <td className="px-6 py-5 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap text-gray-400">{(page - 1) * limit + i + 1}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.city}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.sector}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.plotNumber}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.categoryCode}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.subCategoryCode}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.name}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.fatherName}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.permanentAddress}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.correspondenceAddress}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.mobileNumber}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">{p.email}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">
                     {p.imageUrl ? (
                       <img
                         src={p.imageUrl}
                         alt="property"
-                        className="w-14 h-14 rounded-xl object-cover border border-[#2A3052]"
+                        className="w-14 h-14 rounded-md object-cover border border-[#2A3052]"
                       />
                     ) : (
                       <span className="text-gray-600">—</span>

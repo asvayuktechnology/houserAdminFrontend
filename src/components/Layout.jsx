@@ -12,7 +12,14 @@ const Layout = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
   console.log("Sidebar Open:", isSidebarOpen);
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage: 'url("/globe-bg.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* ✅ Toaster */}
       <Toaster position="top-center" />
 
@@ -35,7 +42,7 @@ const Layout = () => {
           //   stiffness: 220,
           //   damping: 28,
           // }}
-          className={`min-h-screen bg-[#0F1324] w-full p-6 transition-all duration-100 ml-auto ${isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-auto" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"}`}
+          className={`min-h-screen  w-full p-6 transition-all duration-100 ml-auto ${isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-auto" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"}`}
         >
           <Header
             isSidebarOpen={isSidebarOpen}

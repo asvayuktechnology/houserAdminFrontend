@@ -67,7 +67,7 @@ export function AddLeadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
       <h1 className="text-3xl font-bold text-center mt-14 mb-6">
         Add Lead
       </h1>
