@@ -149,7 +149,7 @@ export default function AdminLogin() {
         </div>
 
 
-        <Button onClick={handleSubmit} disabled={loading}>
+        <Button className="cursor-pointer" onClick={handleSubmit} disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </Button>
       </div>

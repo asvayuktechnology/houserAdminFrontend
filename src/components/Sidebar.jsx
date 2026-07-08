@@ -332,10 +332,10 @@ const handleDropdownToggle = (menuId) => {
         </div>
 
         {/* Footer */}
-        <SidebarFooter
+        {/* <SidebarFooter
           collapsed={collapsed}
           handleLogout={handleLogout}
-        />
+        /> */}
 
         {/* Collapse Button (Desktop Only) */}
         {!isMobile && (
