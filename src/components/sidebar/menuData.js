@@ -118,15 +118,15 @@ export const menuSections = [
         title: "Properties",
         icon: Building2,
         children: [
-          {
-            id: "all-properties",
-            title: "All Properties",
-            path: "/admin/properties",
-          },
+          // {
+          //   id: "all-properties",
+          //   title: "All Properties",
+          //   path: "/admin/properties",
+          // },
           {
             id: "post-property",
             title: "Post Properties",
-            path: "/admin/post-properties",
+            path: "/admin/properties",
           },
           // {
           //   id: "fixed-property",
