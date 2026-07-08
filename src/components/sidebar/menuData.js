@@ -128,11 +128,11 @@ export const menuSections = [
             title: "Post Properties",
             path: "/admin/post-properties",
           },
-          {
-            id: "fixed-property",
-            title: "Fixed Properties",
-            path: "/admin/properties",
-          },
+          // {
+          //   id: "fixed-property",
+          //   title: "Fixed Properties",
+          //   path: "/admin/properties",
+          // },
         ],
       },
       {

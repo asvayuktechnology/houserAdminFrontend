@@ -7,6 +7,8 @@ import {
   updateUser,
 } from "../comman/api";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
+import Card from "../components/ui/Card";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
@@ -19,11 +21,9 @@ const Button = ({ children, className = "", ...props }) => (
 
 const Input = ({ error, icon, ...props }) => (
   <input
-    className={`w-full px-3 py-2 rounded-xl bg-gray-800 border ${
-      error ? "border-red-500" : "border-gray-700"
-    } text-white outline-none focus:ring-2 ${
-      error ? "focus:ring-red-500" : "focus:ring-blue-500"
-    }`}
+    className={`w-full px-3 py-2 rounded-xl bg-gray-800 border ${error ? "border-red-500" : "border-gray-700"
+      } text-white outline-none focus:ring-2 ${error ? "focus:ring-red-500" : "focus:ring-blue-500"
+      }`}
     {...props}
   />
 );
@@ -73,7 +73,7 @@ export default function UsersPage() {
       setUsers(res?.data || []);
       setTotalCount(res?.totalCount || 0);
     } catch (error) {
-      toast.error(error?.message ||  "Failed to load users ❌");
+      toast.error(error?.message || "Failed to load users ❌");
     } finally {
       setLoading(false);
     }
@@ -124,14 +124,14 @@ export default function UsersPage() {
     } catch {
       toast.error("Delete failed ❌");
     }
-    
+
   };
 
   // ✅ EDIT OPEN
   const handleEdit = (user) => {
     setSelected({ ...user, password: "", confirm_password: "" });
     setEditErrors({});
-    
+
   };
 
   // ✅ UPDATE
@@ -216,146 +216,225 @@ export default function UsersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6 mt-14 text-center">
-        Users Management
-      </h1>
+      <Card title="Users Management">
 
-      {/* FILTERS + CREATE USER */}
-      <div className="flex items-end gap-3 mb-6 flex-wrap max-w-5xl mx-auto">
-        <div className="flex-1 min-w-[150px]">
-          <label className="text-xs text-gray-400 mb-1 block">City</label>
-          <Input
-            placeholder="Filter by city"
-            value={filters.city}
-            onChange={(e) => setFilters((prev) => ({ ...prev, city: e.target.value }))}
-          />
+
+        {/* FILTERS + CREATE USER */}
+        <div className="flex items-end gap-3 mb-6 flex-wrap max-w-5xl ">
+          <div className="flex-1 min-w-[150px]">
+            <label className="text-xs text-gray-400 mb-1 block">City</label>
+            <Input
+              placeholder="Filter by city"
+              value={filters.city}
+              onChange={(e) => setFilters((prev) => ({ ...prev, city: e.target.value }))}
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="text-xs text-gray-400 mb-1 block">Phone</label>
+            <Input
+              placeholder="Filter by phone"
+              value={filters.phone}
+              onChange={(e) => setFilters((prev) => ({ ...prev, phone: e.target.value }))}
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="text-xs text-gray-400 mb-1 block">Keyword</label>
+            <Input
+              placeholder="Search by name, email..."
+              value={filters.keyword}
+              onChange={(e) => setFilters((prev) => ({ ...prev, keyword: e.target.value }))}
+            />
+          </div>
+          <Button
+            onClick={() => { setPage(1); fetchUsers(1); }}
+            className="bg-blue-600 hover:bg-blue-500 h-[42px]"
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="bg-green-600 hover:bg-green-500 h-[42px]"
+          >
+            + Create User
+          </Button>
         </div>
-        <div className="flex-1 min-w-[150px]">
-          <label className="text-xs text-gray-400 mb-1 block">Phone</label>
-          <Input
-            placeholder="Filter by phone"
-            value={filters.phone}
-            onChange={(e) => setFilters((prev) => ({ ...prev, phone: e.target.value }))}
-          />
-        </div>
-        <div className="flex-1 min-w-[150px]">
-          <label className="text-xs text-gray-400 mb-1 block">Keyword</label>
-          <Input
-            placeholder="Search by name, email..."
-            value={filters.keyword}
-            onChange={(e) => setFilters((prev) => ({ ...prev, keyword: e.target.value }))}
-          />
-        </div>
-        <Button
-          onClick={() => { setPage(1); fetchUsers(1); }}
-          className="bg-blue-600 hover:bg-blue-500 h-[42px]"
-        >
-          Search
-        </Button>
-        <Button
-          onClick={() => setShowAddModal(true)}
-          className="bg-green-600 hover:bg-green-500 h-[42px]"
-        >
-          + Create User
-        </Button>
-      </div>
 
-      {/* TABLE */}
-      {loading ? (
-        <p className="text-center text-gray-400">Loading...</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-800 rounded-xl overflow-hidden">
-            <thead className="bg-gray-800 text-gray-400 text-sm">
-              <tr>
-                <th className="p-3">#</th>
-                <th className="p-3">Name</th>
-                <th className="p-3">Email</th>
-                <th className="p-3">Phone</th>
-                <th className="p-3">City</th>
-                <th className="p-3">State</th>
-                <th className="p-3">Company</th>
-                <th className="p-3">Role</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {users.map((u, i) => (
-                <tr
-                  key={u.id}
-                  className={`border-t border-gray-800 ${
-                    i % 2 === 0 ? "bg-gray-950" : ""
-                  }`}
-                >
-                  <td className="p-3">{(page - 1) * limit + i + 1}</td>
-                  <td className="p-3">{u.name}</td>
-                  <td className="p-3">{u.email}</td>
-                  <td className="p-3">{u.phone}</td>
-                  <td className="p-3">{u.city}</td>
-                  <td className="p-3">{u.state}</td>
-                  <td className="p-3">{u.companyName}</td>
-                  <td className="p-3">{u.role}</td>
-
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded-lg text-xs ${
-                        u.isActive ? "bg-green-600" : "bg-red-600"
-                      }`}
-                    >
-                      {u.isActive ? "Active" : "Blocked"}
-                    </span>
-                  </td>
-
-                  <td className="p-3 flex gap-2">
-                   
-                    <Button onClick={() => handleEdit(u)}>
-                      <Pencil size={16} />
-                    </Button>
-
-                    <Button
-                      className="bg-red-600"
-                      onClick={() => setDeleteTarget(u)}
-                    >
-                      <Trash2 size={16} />
-                    </Button>
-                  </td>
+        {/* TABLE */}
+        {/* TABLE */}
+        {loading ? (
+          <p className="text-center text-gray-400 py-10">Loading...</p>
+        ) : (
+          <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-auto shadow-xl">
+            <table className="min-w-[1300px] w-full">
+              <thead className="border-b border-[#2A3052]">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    #
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    Email
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    Phone
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    City
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    State
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    Company
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    Role
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-center text-xs uppercase tracking-wider font-medium text-white/70">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
 
-          {users.length === 0 && (
-            <p className="text-center p-6 text-gray-400">
-              No users found
-            </p>
-          )}
-        </div>
-      )}
+              <tbody>
+                {!users.length ? (
+                  <tr>
+                    <td
+                      colSpan={10}
+                      className="py-12 text-center text-gray-500"
+                    >
+                      No users found
+                    </td>
+                  </tr>
+                ) : (
+                  users.map((u, i) => (
+                    <motion.tr
+                      key={u.id}
+                      layout
+                      whileHover={{
+                        scale: 1.005,
+                      }}
+                      transition={{
+                        duration: 0.18,
+                      }}
+                      className={`group border-b border-[#2A3052] text-sm transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
+                        }`}
+                    >
+                      <td className="px-6 py-4 text-gray-400 whitespace-nowrap">
+                        {(page - 1) * limit + i + 1}
+                      </td>
 
-      {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-3 mt-6">
-          <Button
-            className="bg-gray-700 hover:bg-gray-600"
-            disabled={page <= 1}
-            onClick={() => { const p = page - 1; setPage(p); fetchUsers(p); }}
-          >
-            Previous
-          </Button>
-          <span className="text-sm text-gray-400">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            className="bg-gray-700 hover:bg-gray-600"
-            disabled={page >= totalPages}
-            onClick={() => { const p = page + 1; setPage(p); fetchUsers(p); }}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+                      <td className="px-6 py-4 whitespace-nowrap font-medium text-white">
+                        {u.name}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                        {u.email}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {u.phone}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {u.city}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {u.state}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {u.companyName || "-"}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="rounded-lg bg-blue-600/20 border border-blue-600/30 px-3 py-1 text-xs font-medium text-blue-400">
+                          {u.role}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${u.isActive
+                            ? "bg-green-500/15 text-green-400 border border-green-500/20"
+                            : "bg-red-500/15 text-red-400 border border-red-500/20"
+                            }`}
+                        >
+                          <span
+                            className={`mr-2 h-2 w-2 rounded-full ${u.isActive
+                              ? "bg-green-400"
+                              : "bg-red-400"
+                              }`}
+                          />
+                          {u.isActive ? "Active" : "Blocked"}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center gap-2">
+                          <Button
+                            className="bg-[#232A47] hover:bg-blue-600"
+                            onClick={() => handleEdit(u)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+
+                          <Button
+                            className="bg-red-600 hover:bg-red-500"
+                            onClick={() => setDeleteTarget(u)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              className="rounded-xl border border-[#2A3052] bg-[#1B2038] hover:bg-[#232A47]"
+              disabled={page <= 1}
+              onClick={() => {
+                const p = page - 1;
+                setPage(p);
+                fetchUsers(p);
+              }}
+            >
+              Previous
+            </Button>
+
+            <div className="rounded-xl border border-[#2A3052] bg-[#171B2E] px-5 py-2 text-sm text-gray-300">
+              Page <span className="font-semibold text-white">{page}</span> of{" "}
+              <span className="font-semibold text-white">{totalPages}</span>
+            </div>
+
+            <Button
+              className="rounded-xl border border-[#2A3052] bg-[#1B2038] hover:bg-[#232A47]"
+              disabled={page >= totalPages}
+              onClick={() => {
+                const p = page + 1;
+                setPage(p);
+                fetchUsers(p);
+              }}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+      </Card>
 
       {/* ADD MODAL */}
       {showAddModal && (
@@ -433,7 +512,7 @@ export default function UsersPage() {
 
             {renderField("Name", "name", "text", "edit")}
             {renderField("Email", "email", "email", "edit")}
-           
+
             {renderField("Phone", "phone", "text", "edit")}
             {renderField("City", "city", "text", "edit")}
             {renderField("State", "state", "text", "edit")}
@@ -449,7 +528,7 @@ export default function UsersPage() {
             >
               <option value="user">User</option>
               <option value="dealer">Dealer</option>
-            
+
             </select>
             {renderField("Password", "password", "password", "edit")}
             {renderField("Confirm Password", "confirm_password", "password", "edit")}
