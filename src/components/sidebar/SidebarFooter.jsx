@@ -61,7 +61,7 @@ function SidebarFooter({
         <LogOut size={20} />
 
         {!collapsed && (
-          <span className="ml-3 text-sm font-medium">
+          <span className="ml-3 text-sm font-medium cursor-pointer">
             Logout
           </span>
         )}

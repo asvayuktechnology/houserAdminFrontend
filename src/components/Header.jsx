@@ -129,16 +129,16 @@ export default function Header({
               <img
                 src="/houserdemologo.png"
                 alt=""
-                className="h-10 w-10 rounded-full object-cover"
+                className="h-10 w-10 rounded-full object-cover cursor-pointer"
               />
 
-              <div className="hidden text-left lg:block">
+              <div className="hidden text-left lg:block cursor-ponter">
 
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-white cursor-pointer">
                   {user.username || "Administrator"}
                 </p>
 
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 cursor-pointer">
                   Admin
                 </p>
 
@@ -157,7 +157,7 @@ export default function Header({
                   onClick={() =>
                     navigate("/admin/profile")
                   }
-                  className="w-full px-5 py-3 text-left text-sm text-gray-300 transition hover:bg-[#232A47]"
+                  className="w-full px-5 py-3 text-left text-sm text-gray-300 transition hover:bg-[#232A47] cursor-pointer"
                 >
                   Profile
                 </button>
@@ -166,7 +166,7 @@ export default function Header({
                   onClick={() =>
                     navigate("/admin/settings")
                   }
-                  className="w-full px-5 py-3 text-left text-sm text-gray-300 transition hover:bg-[#232A47]"
+                  className="w-full px-5 py-3 text-left text-sm text-gray-300 transition hover:bg-[#232A47] cursor-pointer"
                 >
                   Settings
                 </button>
@@ -178,7 +178,7 @@ export default function Header({
                     localStorage.clear();
                     navigate("/");
                   }}
-                  className="w-full px-5 py-3 text-left text-sm text-red-400 transition hover:bg-red-500/10"
+                  className="w-full px-5 py-3 text-left text-sm text-red-400 transition hover:bg-red-500/10 cursor-pointer"
                 >
                   Logout
                 </button>
