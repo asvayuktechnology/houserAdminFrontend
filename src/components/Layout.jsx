@@ -2,17 +2,36 @@ import { Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { AuthProvider } from "../context/AuthContext";
-import { motion } from "framer-motion";
-import { useState } from "react";
-
-
+import { useState, useEffect } from "react";
 
 const Layout = () => {
-  const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  console.log("Sidebar Open:", isSidebarOpen);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+
+      setIsMobile(mobile);
+
+      // Sidebar default state
+      if (mobile) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
+      className="min-h-screen overflow-x-hidden"
       style={{
         backgroundImage: 'url("/globe-bg.jpg")',
         backgroundSize: "cover",
@@ -20,48 +39,40 @@ const Layout = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* ✅ Toaster */}
       <Toaster position="top-center" />
 
-
-      <div className="flex  min-h-screen">
+      <div className="flex min-h-screen">
 
         <Sidebar
           isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setisSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
         />
 
-
-
+        {/* Main Content */}
         <div
-          animate={{
-            marginLeft: isSidebarOpen ? 270 : 80,
-          }}
-          // transition={{
-          //   type: "spring",
-          //   stiffness: 220,
-          //   damping: 28,
-          // }}
-          className={`min-h-screen  w-full p-6 transition-all duration-100 ml-auto ${isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-auto" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"}`}
+          className={`
+            min-h-screen
+            transition-all
+            duration-300
+            ease-in-out
+            ${!isMobile
+              ? isSidebarOpen ? "main-content-collapsed max-w-[calc(100%-260px)] ml-[270px] w-full" : "max-w-[calc(100%-80px)] w-full ml-[80px] main-content-full"
+              : "w-full ml-0"
+            }
+          `}
         >
           <Header
             isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setisSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
           />
 
-          <div
-            style={{ width: "100%" }}
-
-
-          >
-
+          {/* Header Height = 72px */}
+          <div className="pt-[72px] w-full" style={{ width: "100%" }}>
             <Outlet />
-
-
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

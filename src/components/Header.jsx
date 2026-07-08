@@ -53,7 +53,7 @@ export default function Header({
             }
             className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#2A3052] bg-[#1F2440] transition hover:border-blue-600 hover:bg-[#252B48]"
           >
-            <Menu size={22} />
+            <Menu size={22} className="text-gray-400" />
           </button>
 
           <div>

@@ -13,6 +13,7 @@ import {
 } from "../comman/api";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
+import Card from "../components/ui/Card";
 const Button = ({ children, className = "", ...props }) => (
   <button
     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
@@ -246,222 +247,223 @@ export default function PropertiesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+      <Card title="Properties" >
+        {/* HEADER + EXPORT */}
+        <div className="flex md:flex-row flex-col md:justify-between md:items-center mb-6 mt-4 md:gap-0 gap-4">
+          
+        
+          <div className="flex items-center gap-3">
+            <Button
+              className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
+              onClick={() => document.getElementById("excelInput").click()}
+            >
+              <Upload className="w-4 h-4 cursor-pointer" />
+              Import Excel
+            </Button>
 
-      {/* HEADER + EXPORT */}
-      <div className="flex justify-between items-center mb-6 mt-14">
-        <h1 className="text-3xl font-bold">Properties</h1>
+            <input
+              id="excelInput"
+              type="file"
+              accept=".xlsx,.xls"
+              className="hidden"
+              onChange={handleImport}
+            />
 
-        <div className="flex items-center gap-3">
-          <Button
-            className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
-            onClick={() => document.getElementById("excelInput").click()}
-          >
-            <Upload className="w-4 h-4 cursor-pointer" />
-            Import Excel
+            <Button
+              className="bg-green-600 hover:bg-red-500 cursor-pointer"
+              onClick={handleExport}
+            >
+              <Download className="w-4 h-4 cursor-pointer" />
+              Export Excel
+            </Button>
+          </div>
+        </div>
+
+        {/* SEARCH INPUTS */}
+        <div className="flex md:flex-row flex-col flex-wrap md:items-end gap-3 mb-6">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">City</label>
+            <Input
+              placeholder="City"
+              value={searchCity}
+              onChange={(e) => setSearchCity(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">Plot Number</label>
+            <Input
+              placeholder="Plot Number"
+              value={searchPlotNumber}
+              onChange={(e) => setSearchPlotNumber(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">Sector</label>
+            <Input
+              placeholder="Sector"
+              value={searchSector}
+              onChange={(e) => setSearchSector(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">Mobile Number</label>
+            <Input
+              placeholder="Mobile Number"
+              value={searchMobileNumber}
+              onChange={(e) => setSearchMobileNumber(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
+            <Search className="w-4 h-4 cursor-pointer" />
+            Search
           </Button>
-
-          <input
-            id="excelInput"
-            type="file"
-            accept=".xlsx,.xls"
-            className="hidden"
-            onChange={handleImport}
-          />
-
-          <Button
-            className="bg-green-600 hover:bg-red-500 cursor-pointer"
-            onClick={handleExport}
-          >
-            <Download className="w-4 h-4 cursor-pointer" />
-            Export Excel
+          <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
+            <Trash2 className="w-4 h-4 cursor-pointer" />
+            All Delete
           </Button>
         </div>
-      </div>
 
-      {/* SEARCH INPUTS */}
-      <div className="flex flex-wrap items-end gap-3 mb-6">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">City</label>
-          <Input
-            placeholder="City"
-            value={searchCity}
-            onChange={(e) => setSearchCity(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+        {/* COUNT INFO */}
+        <div className="text-sm text-gray-400 mb-3">
+          {fixedProperties.length > 0
+            ? `Showing ${(page - 1) * limit + 1} - ${(page - 1) * limit + fixedProperties.length} of ${totalCount} properties`
+            : "No properties found"}
         </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Plot Number</label>
-          <Input
-            placeholder="Plot Number"
-            value={searchPlotNumber}
-            onChange={(e) => setSearchPlotNumber(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Sector</label>
-          <Input
-            placeholder="Sector"
-            value={searchSector}
-            onChange={(e) => setSearchSector(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Mobile Number</label>
-          <Input
-            placeholder="Mobile Number"
-            value={searchMobileNumber}
-            onChange={(e) => setSearchMobileNumber(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-        <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
-          <Search className="w-4 h-4 cursor-pointer" />
-          Search
-        </Button>
-        <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
-          <Trash2 className="w-4 h-4 cursor-pointer" />
-          All Delete
-        </Button>
-      </div>
 
-      {/* COUNT INFO */}
-      <div className="text-sm text-gray-400 mb-3">
-        {fixedProperties.length > 0
-          ? `Showing ${(page - 1) * limit + 1} - ${(page - 1) * limit + fixedProperties.length} of ${totalCount} properties`
-          : "No properties found"}
-      </div>
-
-      {loading ? (
-        <p className="text-gray-400">Loading...</p>
-      ) : (
-        <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-scroll shadow-xl">
-          <table className="w-full border border-gray-800 rounded-md overflow-hidden">
-            <thead className="border-b border-[#2A3052]">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">#</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">City</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Sector</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Plot</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Category Code</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Sub Category</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Name</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Father Name</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">PermanentAddress</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">CorrespondenceAddress</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Mobile</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Email</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Image</th>
-                <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70 ">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {!fixedProperties?.length ? (
+        {loading ? (
+          <p className="text-gray-400">Loading...</p>
+        ) : (
+          <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-scroll shadow-xl">
+            <table className="w-full border border-gray-800 rounded-md overflow-hidden">
+              <thead className="border-b border-[#2A3052]">
                 <tr>
-                  <td colSpan={14} className="p-6 text-center text-gray-500">
-                    No properties found
-                  </td>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">#</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">City</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Sector</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Plot</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Category Code</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Sub Category</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Name</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Father Name</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">PermanentAddress</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">CorrespondenceAddress</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Mobile</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Email</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Image</th>
+                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70 ">Actions</th>
                 </tr>
-              ) : fixedProperties?.map((p, i) => (
-                <motion.tr
-                  layout
-                  whileHover={{
-                    scale: 1.005
-                  }}
-                  transition={{
-                    duration: .18
-                  }}
+              </thead>
 
-                  key={p.id}
-                  className={`group text-sm border-b border-[#2A3052] transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
-                    }`}>
-                  <td className="px-6 py-3 whitespace-nowrap text-gray-400">{(page - 1) * limit + i + 1}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.city}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.sector}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.plotNumber}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.categoryCode}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.subCategoryCode}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.name}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.fatherName}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.permanentAddress}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.correspondenceAddress}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.mobileNumber}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{p.email}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    {p.imageUrl ? (
-                      <img
-                        src={p.imageUrl}
-                        alt="property"
-                        className="w-14 h-14 rounded-md object-cover border border-[#2A3052]"
-                      />
-                    ) : (
-                      <span className="text-gray-600">—</span>
-                    )}
-                  </td> 
+              <tbody>
+                {!fixedProperties?.length ? (
+                  <tr>
+                    <td colSpan={14} className="p-6 text-center text-gray-500">
+                      No properties found
+                    </td>
+                  </tr>
+                ) : fixedProperties?.map((p, i) => (
+                  <motion.tr
+                    layout
+                    whileHover={{
+                      scale: 1.005
+                    }}
+                    transition={{
+                      duration: .18
+                    }}
 
-                  <td className="p-3 flex gap-2 justify-center">
-                    <Button
-                      className="bg-red-600 hover:bg-red-500"
-                      onClick={() => handleDelete(p.id)}
-                    >
-                      <Trash2 className="w-4 h-4 cursor-pointer" />
-                    </Button>
+                    key={p.id}
+                    className={`group text-sm border-b border-[#2A3052] transition-all duration-200 hover:bg-[#232A47]/70 ${i % 2 === 0 ? "bg-gray-950/50" : ""
+                      }`}>
+                    <td className="px-6 py-3 whitespace-nowrap text-gray-400">{(page - 1) * limit + i + 1}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.city}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.sector}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.plotNumber}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.categoryCode}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.subCategoryCode}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.name}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.fatherName}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.permanentAddress}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.correspondenceAddress}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.mobileNumber}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{p.email}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">
+                      {p.imageUrl ? (
+                        <img
+                          src={p.imageUrl}
+                          alt="property"
+                          className="w-14 h-14 rounded-md object-cover border border-[#2A3052]"
+                        />
+                      ) : (
+                        <span className="text-gray-600">—</span>
+                      )}
+                    </td>
 
-                    <Button onClick={() => handleEdit(p)}>
-                      <Pencil className="w-4 h-4 cursor-pointer" />
-                    </Button>
-                  </td>
-                </motion.tr>
-            ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                    <td className="p-3 flex gap-2 justify-center">
+                      <Button
+                        className="bg-red-600 hover:bg-red-500"
+                        onClick={() => handleDelete(p.id)}
+                      >
+                        <Trash2 className="w-4 h-4 cursor-pointer" />
+                      </Button>
 
-      {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6 cursor-pointer">
-          <Button
-            className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            Prev
-          </Button>
+                      <Button onClick={() => handleEdit(p)}>
+                        <Pencil className="w-4 h-4 cursor-pointer" />
+                      </Button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-          <span className="text-sm text-gray-400 px-3">
-            Page {page} of {totalPages}
-          </span>
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6 cursor-pointer">
+            <Button
+              className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Prev
+            </Button>
 
-          {getPageNumbers().map((p, i) =>
-            p === "..." ? (
-              <span key={`ellipsis-${i}`} className="px-2 text-gray-500">...</span>
-            ) : (
-              <Button
-                key={p}
-                className={`${p === page
-                  ? "bg-indigo-500 hover:bg-indigo-500"
-                  : "bg-gray-700 hover:bg-gray-600"
-                  }`}
-                onClick={() => setPage(p)}
-              >
-                {p}
-              </Button>
-            )
-          )}
+            <span className="text-sm text-gray-400 px-3">
+              Page {page} of {totalPages}
+            </span>
 
-          <Button
-            className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+            {getPageNumbers().map((p, i) =>
+              p === "..." ? (
+                <span key={`ellipsis-${i}`} className="px-2 text-gray-500">...</span>
+              ) : (
+                <Button
+                  key={p}
+                  className={`${p === page
+                    ? "bg-indigo-500 hover:bg-indigo-500"
+                    : "bg-gray-700 hover:bg-gray-600"
+                    }`}
+                  onClick={() => setPage(p)}
+                >
+                  {p}
+                </Button>
+              )
+            )}
 
+            <Button
+              className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+
+      </Card>
       {/* EDIT MODAL */}
       {selected && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
