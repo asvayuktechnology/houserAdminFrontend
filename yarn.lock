@@ -141,6 +141,28 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
+"@emnapi/core@^1.7.1":
+  version "1.11.2"
+  resolved "https://registry.npmjs.org/@emnapi/core/-/core-1.11.2.tgz"
+  integrity sha512-TC8MkTuZUtcTSiFeuC0ksCh9QIJ5+F21MvZ4Wn4ORfYaFJ/0dsiudv5tVkejgwZlwQ39jL9WWDe2lz8x0WglOA==
+  dependencies:
+    "@emnapi/wasi-threads" "1.2.2"
+    tslib "^2.4.0"
+
+"@emnapi/runtime@^1.7.1":
+  version "1.11.2"
+  resolved "https://registry.npmjs.org/@emnapi/runtime/-/runtime-1.11.2.tgz"
+  integrity sha512-kyOl3X0DuTiT1h2ft8r2fYO8JYtU9a9Xis/zBSiGArNaagCOWx90N1k2wxp18czFDH+OgcWGb5ZP/XMt3dcyPA==
+  dependencies:
+    tslib "^2.4.0"
+
+"@emnapi/wasi-threads@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/@emnapi/wasi-threads/-/wasi-threads-1.2.2.tgz"
+  integrity sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA==
+  dependencies:
+    tslib "^2.4.0"
+
 "@eslint-community/eslint-utils@^4.8.0":
   version "4.9.1"
   resolved "https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.9.1.tgz"
@@ -311,15 +333,10 @@
   resolved "https://registry.npmjs.org/@react-leaflet/core/-/core-3.0.0.tgz"
   integrity sha512-3EWmekh4Nz+pGcr+xjf0KNyYfC3U2JjnkWsh0zcqaexYqmmB5ZhH37kz41JXGmKzpaMZCnPofBBm64i+YrEvGQ==
 
-"@rolldown/binding-linux-x64-gnu@1.0.0-rc.15":
+"@rolldown/binding-win32-x64-msvc@1.0.0-rc.15":
   version "1.0.0-rc.15"
-  resolved "https://registry.npmjs.org/@rolldown/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.0.0-rc.15.tgz"
-  integrity sha512-023bTPBod7J3Y/4fzAN6QtpkSABR0rigtrwaP+qSEabUh5zf6ELr9Nc7GujaROuPY3uwdSIXWrvhn1KxOvurWA==
-
-"@rolldown/binding-linux-x64-musl@1.0.0-rc.15":
-  version "1.0.0-rc.15"
-  resolved "https://registry.npmjs.org/@rolldown/binding-linux-x64-musl/-/binding-linux-x64-musl-1.0.0-rc.15.tgz"
-  integrity sha512-witB2O0/hU4CgfOOKUoeFgQ4GktPi1eEbAhaLAIpgD6+ZnhcPkUtPsoKKHRzmOoWPZue46IThdSgdo4XneOLYw==
+  resolved "https://registry.npmjs.org/@rolldown/binding-win32-x64-msvc/-/binding-win32-x64-msvc-1.0.0-rc.15.tgz"
+  integrity sha512-3P2A8L+x75qavWLe/Dll3EYBJLQmtkJN8rfh+U/eR3MqMgL/h98PhYI+JFfXuDPgPeCB7iZAKiqii5vqOvnA0g==
 
 "@rolldown/pluginutils@1.0.0-rc.15":
   version "1.0.0-rc.15"
@@ -344,15 +361,10 @@
     source-map-js "^1.2.1"
     tailwindcss "4.2.2"
 
-"@tailwindcss/oxide-linux-x64-gnu@4.2.2":
+"@tailwindcss/oxide-win32-x64-msvc@4.2.2":
   version "4.2.2"
-  resolved "https://registry.npmjs.org/@tailwindcss/oxide-linux-x64-gnu/-/oxide-linux-x64-gnu-4.2.2.tgz"
-  integrity sha512-rTAGAkDgqbXHNp/xW0iugLVmX62wOp2PoE39BTCGKjv3Iocf6AFbRP/wZT/kuCxC9QBh9Pu8XPkv/zCZB2mcMg==
-
-"@tailwindcss/oxide-linux-x64-musl@4.2.2":
-  version "4.2.2"
-  resolved "https://registry.npmjs.org/@tailwindcss/oxide-linux-x64-musl/-/oxide-linux-x64-musl-4.2.2.tgz"
-  integrity sha512-XW3t3qwbIwiSyRCggeO2zxe3KWaEbM0/kW9e8+0XpBgyKU4ATYzcVSMKteZJ1iukJ3HgHBjbg9P5YPRCVUxlnQ==
+  resolved "https://registry.npmjs.org/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.2.2.tgz"
+  integrity sha512-1T/37VvI7WyH66b+vqHj/cLwnCxt7Qt3WFu5Q8hk65aOvlwAhs7rAp1VkulBJw/N4tMirXjVnylTR72uI0HGcA==
 
 "@tailwindcss/oxide@4.2.2":
   version "4.2.2"
@@ -380,6 +392,13 @@
     "@tailwindcss/node" "4.2.2"
     "@tailwindcss/oxide" "4.2.2"
     tailwindcss "4.2.2"
+
+"@tybys/wasm-util@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.npmjs.org/@tybys/wasm-util/-/wasm-util-0.10.1.tgz"
+  integrity sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==
+  dependencies:
+    tslib "^2.4.0"
 
 "@types/estree@^1.0.6":
   version "1.0.8"
@@ -1090,15 +1109,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-lightningcss-linux-x64-gnu@1.32.0:
+lightningcss-win32-x64-msvc@1.32.0:
   version "1.32.0"
-  resolved "https://registry.npmjs.org/lightningcss-linux-x64-gnu/-/lightningcss-linux-x64-gnu-1.32.0.tgz"
-  integrity sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==
-
-lightningcss-linux-x64-musl@1.32.0:
-  version "1.32.0"
-  resolved "https://registry.npmjs.org/lightningcss-linux-x64-musl/-/lightningcss-linux-x64-musl-1.32.0.tgz"
-  integrity sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==
+  resolved "https://registry.npmjs.org/lightningcss-win32-x64-msvc/-/lightningcss-win32-x64-msvc-1.32.0.tgz"
+  integrity sha512-Amq9B/SoZYdDi1kFrojnoqPLxYhQ4Wo5XiL8EVJrVsB8ARoC1PWW6VGtT0WKCemjy8aC+louJnjS7U18x3b06Q==
 
 lightningcss@^1.32.0, lightningcss@1.32.0:
   version "1.32.0"
