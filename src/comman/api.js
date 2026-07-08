@@ -137,7 +137,51 @@ export const allDeleteDealers = () =>
     method: "DELETE",
   });
 
+//Blogs
+export const getBlogs = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/blog${qs ? "?" + qs : ""}`);
+};
 
+export const addBlogs = (formData) =>
+  apiFetch("/admin/blog", {
+    method: "POST",
+    body: formData,
+  });
+
+export const deleteBlogs = (id) =>
+  apiFetch(`/admin/blog/${id}`, {
+    method: "DELETE",
+  });
+
+export const updateBlogs = (id, formData) =>
+  apiFetch(`/admin/blog/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+
+export const allDeleteBlogs = () =>
+  apiFetch("/admin/blogs", {
+    method: "DELETE",
+  });
+
+// export const uploadExcel = (file) => {
+//   const formData = new FormData();
+//   formData.append("file", file);
+//   return apiFetch("/admin/blogs", {
+//     method: "POST",
+//     body: formData,
+//   });
+// };
+
+// export const allDeleteDealers = () =>
+//   apiFetch("/admin/blogs", {
+//     method: "DELETE",
+//   });
 
 // 🏠 PROPERTIES
 export const getProperties = (params = {}) => {

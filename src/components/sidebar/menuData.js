@@ -239,11 +239,29 @@ export const menuSections = [
         icon: Clipboard,
         path: "/admin/pages",
       },
-      {
+      // {
+      //   id: "blogs",
+      //   title: "Blogs",
+      //   icon: LucideBlocks,
+      //   path: "/admin/blogs", 
+      // },
+
+        {
         id: "blogs",
         title: "Blogs",
         icon: LucideBlocks,
-        path: "/admin/blogs", 
+        children: [
+          {
+            id: "all-blogs",
+            title: "All Blogs",
+            path: "/admin/blogs",
+          },
+          {
+            id: "add-blogs",
+            title: "Add Blogs",
+            path: "/admin/add-blogs",
+          },
+        ],
       },
     ],
   },

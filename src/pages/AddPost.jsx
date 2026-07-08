@@ -25,7 +25,14 @@ const Textarea = ({ ...props }) => (
     {...props}
   />
 );
-
+const Select = ({ children, ...props }) => (
+  <select
+    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+    {...props}
+  >
+    {children}
+  </select>
+);
 export function AddPostPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -35,6 +42,7 @@ export function AddPostPage() {
     sector: "",
     plot: "",
     address: "",
+     type: "",
     comment: "",
   });
 
@@ -57,7 +65,9 @@ export function AddPostPage() {
         sector: "",
         plot: "",
         address: "",
+         type: "",
         comment: "",
+        
       });
       navigate("/admin/posts");
     } catch (error) {
@@ -142,7 +152,20 @@ export function AddPostPage() {
             setForm({ ...form, address: e.target.value })
           }
         />
-
+<Select
+  value={form.type}
+  required
+  onChange={(e) =>
+    setForm({ ...form, type: e.target.value })
+  }
+>
+  <option value="" disabled>
+    Select Section Type
+  </option>
+  <option value="sell">Sell</option>
+  <option value="buy">Buy</option>
+  <option value="rent">Rent</option>
+</Select>
         <Textarea
           placeholder="Comment *"
           value={form.comment}

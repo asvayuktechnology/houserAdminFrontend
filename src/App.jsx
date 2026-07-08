@@ -18,6 +18,8 @@ import PostPropertiesPage from './pages/PostProperties';
 import LeadPropertiesPage from './pages/LeadProperties';
 import SettingsPage from './pages/Settings';
 import NotFound from './pages/NotFound';
+import { AddBlogPage } from './pages/addBlog';
+import BlogsPage from './pages/blogs';
 
 function App() {
 
@@ -87,6 +89,15 @@ function App() {
         path:'post-properties',
         element: <PostPropertiesPage />
       },
+       {
+        path:'add-blogs',
+        element: <AddBlogPage />
+      },
+      {
+        path:'blogs',
+        element: <BlogsPage />
+      },
+      
       {
         path:'settings',
         element: <SettingsPage />

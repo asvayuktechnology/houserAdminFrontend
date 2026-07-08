@@ -236,6 +236,7 @@ export default function PostsPage() {
                 <th className="p-3">Sector</th>
                 <th className="p-3">Plot</th>
                 <th className="p-3">Address</th>
+                 <th className="p-3">Type</th>
                 <th className="p-3">Comment</th>
                 <th className="p-3 text-center">Actions</th>
               </tr>
@@ -272,6 +273,23 @@ export default function PostsPage() {
                   <td className="p-3">{p.sector || "-"}</td>
                   <td className="p-3">{p.plot || "-"}</td>
                   <td className="p-3 max-w-xs truncate">{p.address || "-"}</td>
+                  <td className="p-3">
+  <span
+    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+      p.type === "buy"
+        ? "bg-green-100 text-green-700"
+        : p.type === "sell"
+        ? "bg-blue-100 text-blue-700"
+        : p.type === "rent"
+        ? "bg-yellow-100 text-yellow-700"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+    {p.type
+      ? p.type.charAt(0).toUpperCase() + p.type.slice(1)
+      : "-"}
+  </span>
+</td>
                   <td className="p-3 max-w-xs truncate">{p.comment || "-"}</td>
                   <td className="p-3 flex gap-2 justify-center">
                     <Button
@@ -339,23 +357,36 @@ export default function PostsPage() {
             <h2 className="text-xl font-semibold">Edit Post</h2>
 
             {[
-              { field: "fullName", label: "Full Name" },
-              { field: "phoneNo", label: "Phone No" },
-              { field: "city", label: "City" },
-              { field: "sector", label: "Sector" },
-              { field: "plot", label: "Plot" },
-              { field: "address", label: "Address" },
-              { field: "comment", label: "Comment" },
-            ].map(({ field, label }) => (
-              <Input
-                key={field}
-                placeholder={label}
-                value={selected[field] || ""}
-                onChange={(e) =>
-                  setSelected({ ...selected, [field]: e.target.value })
-                }
-              />
-            ))}
+  { field: "fullName", label: "Full Name" },
+  { field: "phoneNo", label: "Phone No" },
+  { field: "city", label: "City" },
+  { field: "sector", label: "Sector" },
+  { field: "plot", label: "Plot" },
+  { field: "address", label: "Address" },
+  { field: "comment", label: "Comment" },
+].map(({ field, label }) => (
+  <Input
+    key={field}
+    placeholder={label}
+    value={selected[field] || ""}
+    onChange={(e) =>
+      setSelected({ ...selected, [field]: e.target.value })
+    }
+  />
+))}
+
+<select
+  className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+  value={selected.type || ""}
+  onChange={(e) =>
+    setSelected({ ...selected, type: e.target.value })
+  }
+>
+  <option value="">Select Type</option>
+  <option value="buy">Buy</option>
+  <option value="sell">Sell</option>
+  <option value="rent">Rent</option>
+</select>
 
             <div className="flex gap-2 pt-2 cursor-pointer">
               <Button onClick={handleSave} disabled={loading}>
