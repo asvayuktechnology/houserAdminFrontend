@@ -16,14 +16,15 @@ import * as XLSX from "xlsx";
 import Card from "../components/ui/Card";
 import FormModal from "../components/ui/modal/FormModal";
 import ConfirmModal from "../components/ui/modal/ConfirmModal";
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+import Button from "../components/ui/Button";
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = (props) => (
   <input
@@ -248,7 +249,7 @@ export default function PropertiesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
       <Card title="Properties" >
         {/* HEADER + EXPORT */}
         <div className="flex md:flex-row flex-col md:justify-between md:items-center mb-6 mt-4 md:gap-0 gap-4">
@@ -256,7 +257,7 @@ export default function PropertiesPage() {
 
           <div className="flex items-center gap-3">
             <Button
-              className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
+              variant="secondary"
               onClick={() => document.getElementById("excelInput").click()}
             >
               <Upload className="w-4 h-4 cursor-pointer" />
@@ -272,7 +273,7 @@ export default function PropertiesPage() {
             />
 
             <Button
-              className="bg-green-600 hover:bg-red-500 cursor-pointer"
+              variant="primary"
               onClick={handleExport}
             >
               <Download className="w-4 h-4 cursor-pointer" />
@@ -319,11 +320,11 @@ export default function PropertiesPage() {
               onKeyDown={handleKeyDown}
             />
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
+          <Button variant="primary" onClick={handleSearch}>
             <Search className="w-4 h-4 cursor-pointer" />
             Search
           </Button>
-          <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
+          <Button variant="danger" onClick={() => setDeleteAll(true)}>
             <Trash2 className="w-4 h-4 cursor-pointer" />
             All Delete
           </Button>
@@ -339,7 +340,7 @@ export default function PropertiesPage() {
         {loading ? (
           <p className="text-gray-400">Loading...</p>
         ) : (
-          <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-scroll shadow-xl">
+          <div className="rounded-2xl border border-[#2A3052] bg-[#1B2038] overflow-x-scroll shadow-xl table-scroller">
             <table className="w-full border border-gray-800 rounded-md overflow-hidden">
               <thead className="border-b border-[#2A3052]">
                 <tr>
@@ -406,13 +407,13 @@ export default function PropertiesPage() {
 
                     <td className="p-3 flex gap-2 justify-center">
                       <Button
-                        className="bg-red-600 hover:bg-red-500"
+                        variant="danger"
                         onClick={() => handleDelete(p.id)}
                       >
                         <Trash2 className="w-4 h-4 cursor-pointer" />
                       </Button>
 
-                      <Button onClick={() => handleEdit(p)}>
+                      <Button variant="primary" onClick={() => handleEdit(p)}>
                         <Pencil className="w-4 h-4 cursor-pointer" />
                       </Button>
                     </td>
@@ -427,7 +428,7 @@ export default function PropertiesPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-6 cursor-pointer">
             <Button
-              className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
+              variant={page <= 1 ? "ghost" : "secondary"}
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
             >
@@ -444,10 +445,11 @@ export default function PropertiesPage() {
               ) : (
                 <Button
                   key={p}
-                  className={`${p === page
-                    ? "bg-indigo-500 hover:bg-indigo-500"
-                    : "bg-gray-700 hover:bg-gray-600"
+                  variant={`${p === page
+                    ? "primary"
+                    : "outline"
                     }`}
+                 
                   onClick={() => setPage(p)}
                 >
                   {p}
@@ -456,7 +458,7 @@ export default function PropertiesPage() {
             )}
 
             <Button
-              className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
+              variant="secondary"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             >

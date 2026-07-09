@@ -6,19 +6,20 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { Upload, X, Image as ImageIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
 
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = ({ className = "", ...props }) => (
   <input
-    className={`w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+    className={`w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
     {...props}
   />
 );
@@ -150,7 +151,7 @@ export function AddBlogPage() {
               <label className="block text-sm mb-2 text-gray-300">
                 Content <span className="text-red-500">*</span>
               </label>
-              <div className="rounded-xl overflow-hidden border border-gray-700">
+              <div className="rounded-md overflow-hidden border border-gray-700">
                 <ReactQuill
                   theme="snow"
                   value={content}
@@ -182,7 +183,7 @@ export function AddBlogPage() {
 
                 <label
                   htmlFor="imageUpload"
-                  className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-gray-700 cursor-pointer transition hover:border-blue-500 hover:bg-gray-800/50"
+                  className="flex items-center gap-2 px-4 py-3 rounded-md border-2 border-dashed border-gray-700 cursor-pointer transition hover:border-blue-500 hover:bg-gray-800/50"
                 >
                   <Upload className="w-5 h-5 text-gray-400" />
                   <span className="text-sm text-gray-400">
@@ -207,7 +208,7 @@ export function AddBlogPage() {
                   <img
                     src={imagePreview}
                     alt="Preview"
-                    className="w-full h-60 object-cover rounded-xl border border-gray-700"
+                    className="w-full h-60 object-cover rounded-md border border-gray-700"
                   />
                   <div className="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded-lg flex items-center gap-1">
                     <ImageIcon className="w-3 h-3 text-green-400" />
@@ -226,7 +227,7 @@ export function AddBlogPage() {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -246,8 +247,9 @@ export function AddBlogPage() {
 
   <Button
     type="button"
-    className="w-full bg-gray-700 hover:bg-gray-600 cursor-pointer"
+    variant="secondary"
     onClick={() => navigate("/admin/blogs")}
+    className="w-full"
   >
     Cancel
   </Button>

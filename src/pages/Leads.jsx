@@ -9,18 +9,19 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card";
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+import Button from "../components/ui/Button";
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = (props) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
     {...props}
   />
 );
@@ -168,7 +169,7 @@ export default function LeadsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
       <Card title="Leads">
 
         {/* <div className="flex md:flex-row flex-col md:justify-between md:items-center mb-6 mt-4 md:gap-0 gap-4">
@@ -203,7 +204,7 @@ export default function LeadsPage() {
               onKeyDown={handleKeyDown}
             />
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
+          <Button variant="secondary" onClick={handleSearch}>
             <Search className="w-4 h-4 cursor-pointer" />
             Search
           </Button>
@@ -212,7 +213,7 @@ export default function LeadsPage() {
           All Delete
         </Button> */}
           <Button
-            className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
+            variant="primary"
             onClick={() => navigate("/admin/add-lead")}
           >
             Create
@@ -295,12 +296,12 @@ export default function LeadsPage() {
                     <td className="p-3 max-w-xs truncate">{l.comment || "-"}</td>
                     <td className="p-3 flex gap-2 justify-center">
                       <Button
-                        className="bg-red-600 hover:bg-red-500 cursor-pointer"
+                        variant="danger"
                         onClick={() => handleDelete(l.id)}
                       >
                         <Trash2 className="w-4 h-4 cursor-pointer" />
                       </Button>
-                      <Button onClick={() => handleEdit(l)}>
+                      <Button variant="primary" onClick={() => handleEdit(l)}>
                         <Pencil className="w-4 h-4 cursor-pointer" />
                       </Button>
                     </td>
@@ -378,7 +379,7 @@ export default function LeadsPage() {
 ))}
 
 <select
-  className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+  className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
   value={selected.type || ""}
   onChange={(e) =>
     setSelected({ ...selected, type: e.target.value })

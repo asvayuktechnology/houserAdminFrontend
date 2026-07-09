@@ -9,19 +9,22 @@ import {
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
+import ConfirmModal from "../components/ui/modal/ConfirmModal";
+import FormModal from "../components/ui/modal/FormModal";
 
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = ({ error, icon, ...props }) => (
   <input
-    className={`w-full px-3 py-2 rounded-xl bg-gray-800 border ${error ? "border-red-500" : "border-gray-700"
+    className={`w-full px-3 py-2 rounded-md bg-gray-800 border ${error ? "border-red-500" : "border-gray-700"
       } text-white outline-none focus:ring-2 ${error ? "focus:ring-red-500" : "focus:ring-blue-500"
       }`}
     {...props}
@@ -215,7 +218,7 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
       <Card title="Users Management">
 
 
@@ -247,13 +250,13 @@ export default function UsersPage() {
           </div>
           <Button
             onClick={() => { setPage(1); fetchUsers(1); }}
-            className="bg-blue-600 hover:bg-blue-500 h-[42px]"
+            variant="secondary"
           >
             Search
           </Button>
           <Button
             onClick={() => setShowAddModal(true)}
-            className="bg-green-600 hover:bg-green-500 h-[42px]"
+            variant="primary"
           >
             + Create User
           </Button>
@@ -379,14 +382,14 @@ export default function UsersPage() {
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-2">
                           <Button
-                            className="bg-[#232A47] hover:bg-blue-600"
+                            variant="primary"
                             onClick={() => handleEdit(u)}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
 
                           <Button
-                            className="bg-red-600 hover:bg-red-500"
+                            variant="danger"
                             onClick={() => setDeleteTarget(u)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -436,8 +439,97 @@ export default function UsersPage() {
         )}
       </Card>
 
+
+      <FormModal
+        open={showAddModal}
+        title="Add User"
+        submitText="Add User"
+        loading={loading}
+        onSubmit={handleAdd}
+        onClose={() => {
+          setShowAddModal(false);
+          setFormErrors({});
+        }}
+        maxWidth="max-w-md"
+      >
+        {renderField("Name", "name")}
+        {renderField("Email", "email", "email")}
+        {renderField("Phone", "phone")}
+        {renderField("City", "city")}
+        {renderField("State", "state")}
+        {renderField("Company Name", "companyName")}
+        {renderField("Address", "address")}
+
+        <select
+          className="w-full rounded-xl border border-[#2A3052] bg-[#1B2038] px-4 py-3 text-white outline-none transition focus:border-blue-600"
+          value={form.role}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              role: e.target.value,
+            })
+          }
+        >
+          <option value="user">User</option>
+          <option value="dealer">Dealer</option>
+        </select>
+
+        {renderField("Password", "password", "password")}
+        {renderField("Confirm Password", "confirm_password", "password")}
+      </FormModal>
+
+      {selected && (<FormModal
+        open={!!selected}
+        title="Edit User"
+        submitText="Save Changes"
+        loading={loading}
+        onSubmit={handleSave}
+        onClose={() => setSelected(null)}
+        maxWidth="max-w-md"
+      >
+        {renderField("Name", "name", "text", "edit")}
+        {renderField("Email", "email", "email", "edit")}
+        {renderField("Phone", "phone", "text", "edit")}
+        {renderField("City", "city", "text", "edit")}
+        {renderField("State", "state", "text", "edit")}
+        {renderField("Company Name", "companyName", "text", "edit")}
+        {renderField("Address", "address", "text", "edit")}
+
+        <select
+          className="w-full rounded-xl border border-[#2A3052] bg-[#1B2038] px-4 py-3 text-white outline-none transition focus:border-blue-600"
+          value={selected?.role}
+          onChange={(e) =>
+            setSelected({
+              ...selected,
+              role: e.target.value,
+            })
+          }
+        >
+          <option value="user">User</option>
+          <option value="dealer">Dealer</option>
+        </select>
+
+        {renderField("Password", "password", "password", "edit")}
+        {renderField(
+          "Confirm Password",
+          "confirm_password",
+          "password",
+          "edit"
+        )}
+      </FormModal>)}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete User"
+        description="Are you sure you want to delete this user? This action cannot be undone."
+        confirmText="Delete"
+        loading={loading}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => handleDelete(deleteTarget.id)}
+      />
+
       {/* ADD MODAL */}
-      {showAddModal && (
+      {/* {showAddModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-md space-y-3 border border-gray-800 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-semibold">Add User</h2>
@@ -451,13 +543,12 @@ export default function UsersPage() {
             {renderField("Address", "address")}
 
             <select
-              className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
               value={form.role}
               onChange={(e) => setForm({ ...form, role: e.target.value })}
             >
               <option value="user">User</option>
               <option value="dealer">Dealer</option>
-                {/* <option value="admin">admin</option> */}
             </select>
 
             {renderField("Password", "password", "password")}
@@ -476,10 +567,10 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* DELETE CONFIRM MODAL */}
-      {deleteTarget && (
+      {/* {deleteTarget && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm space-y-4 border border-gray-800 text-center">
             <h2 className="text-lg font-semibold">Confirm Delete</h2>
@@ -502,10 +593,10 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* EDIT MODAL */}
-      {selected && (
+      {/* {selected && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-md space-y-3 border border-gray-800">
             <h2 className="text-xl font-semibold">Edit User</h2>
@@ -520,7 +611,7 @@ export default function UsersPage() {
             {renderField("Address", "address", "text", "edit")}
 
             <select
-              className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
               value={selected.role}
               onChange={(e) =>
                 setSelected({ ...selected, role: e.target.value })
@@ -545,7 +636,7 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
