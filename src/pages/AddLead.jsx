@@ -3,32 +3,33 @@ import { addLead } from "../comman/api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card";
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+import Button from "../components/ui/Button";
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = ({ ...props }) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
     {...props}
   />
 );
 
 const Textarea = ({ ...props }) => (
   <textarea
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 resize-none"
     rows={3}
     {...props}
   />
 );
 const Select = ({ children, ...props }) => (
   <select
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
     {...props}
   >
     {children}
@@ -78,7 +79,7 @@ export function AddLeadPage() {
   };
 
   return (
-    <div className="min-h-screen  bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen  bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
       <div className="max-w-xl mx-auto">
         <Card title="Add Lead">
 
@@ -177,6 +178,7 @@ export function AddLeadPage() {
 
             <div className="space-y-3">
               <Button
+              variant="primary"
                 type="submit"
                 className="w-full cursor-pointer"
                 disabled={loading}
@@ -186,7 +188,8 @@ export function AddLeadPage() {
 
               <Button
                 type="button"
-                className="w-full bg-gray-700 hover:bg-gray-600 cursor-pointer"
+                variant="secondary"
+                className="w-full  cursor-pointer"
                 onClick={() => navigate("/admin/leads")}
               >
                 Cancel

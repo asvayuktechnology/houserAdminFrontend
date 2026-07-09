@@ -132,7 +132,7 @@ fd.append("link", form.link);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
       <Card title="Banners">
 
     <div className="min-h-screen  text-white p-6">

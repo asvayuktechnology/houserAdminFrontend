@@ -70,7 +70,7 @@ export default function Modal({
 
                 <button
                   onClick={onClose}
-                  className="rounded-lg p-2 transition hover:bg-[#232A47]"
+                  className="rounded-lg p-2 transition hover:bg-[#232A47] cursor-pointer"
                 >
                   <X size={18} />
                 </button>

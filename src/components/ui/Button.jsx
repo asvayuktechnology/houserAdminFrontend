@@ -30,7 +30,7 @@ const sizes = {
 export default function Button({
     children,
     variant = "primary",
-    size = "md",
+    size = "sm",
     loading = false,
     disabled = false,
     fullWidth = false,

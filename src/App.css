@@ -187,20 +187,23 @@
 }
 
 
-.sidebar::-webkit-scrollbar {
+.sidebar::-webkit-scrollbar,.table-scroller::-webkit-scrollbar {
   width: 5px;
 }
+.table-scroller::-webkit-scrollbar{
+  height: 8px;
+}
 
-.sidebar::-webkit-scrollbar-track {
+.sidebar::-webkit-scrollbar-track,.table-scroller::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.sidebar::-webkit-scrollbar-thumb {
+.sidebar::-webkit-scrollbar-thumb,.table-scroller::-webkit-scrollbar-thumb {
   background: #394164;
   border-radius: 20px;
 }
 
-.sidebar::-webkit-scrollbar-thumb:hover {
+.sidebar::-webkit-scrollbar-thumb:hover,.table-scroller::-webkit-scrollbar-thumb:hover {
   background: #56638f;
 }
 
@@ -208,15 +211,15 @@ body {
   font-size: 14px;
 }
 
-.sidebar::-webkit-scrollbar {
+.sidebar::-webkit-scrollbar,.table-scroller::-webkit-scrollbar {
   width: 7px;
 }
 
-.sidebar::-webkit-scrollbar-track {
+.sidebar::-webkit-scrollbar-track,.table-scroller::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.sidebar::-webkit-scrollbar-thumb {
+.sidebar::-webkit-scrollbar-thumb,.table-scroller::-webkit-scrollbar-thumb {
   border-radius: 100px;
   background: linear-gradient(180deg,
       rgba(37, 99, 235, 0.8),
@@ -225,7 +228,7 @@ body {
   background-clip: padding-box;
 }
 
-.sidebar::-webkit-scrollbar-thumb:hover {
+.sidebar::-webkit-scrollbar-thumb:hover,.table-scroller::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg,
       #3b82f6,
       #1d4ed8);

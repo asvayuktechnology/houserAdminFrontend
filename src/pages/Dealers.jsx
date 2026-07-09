@@ -26,7 +26,7 @@ import ConfirmModal from "../components/ui/modal/ConfirmModal";
 
 const Input = (props) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
     {...props}
   />
 );
@@ -243,7 +243,7 @@ export default function DealersPage() {
     toast.success("Phone copied!");
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
       <Card title="Dealers">
 
         <div className="flex md:flex-row flex-col md:justify-between md:items-center mb-6 mt-4 md:gap-0 gap-4">
