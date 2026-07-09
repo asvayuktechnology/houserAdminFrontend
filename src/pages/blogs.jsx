@@ -5,10 +5,11 @@ import toast from "react-hot-toast";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
+import Card from "../components/ui/Card";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
+    className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
     {...props}
   >
     {children}
@@ -17,7 +18,7 @@ const Button = ({ children, className = "", ...props }) => (
 
 const Input = (props) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
     {...props}
   />
 );
@@ -50,7 +51,7 @@ const quillFormats = [
 ];
 
 export default function BlogsPage() {
-     const navigate = useNavigate();
+  const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
   const [selected, setSelected] = useState(null);
   const [viewBlog, setViewBlog] = useState(null);
@@ -237,186 +238,173 @@ export default function BlogsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+      <Card title="Blogs">
 
-      <div className="flex justify-between items-center mb-6 mt-14">
-        <h1 className="text-3xl font-bold">Blogs</h1>
+     
 
-        {/* <div className="flex items-center gap-3">
-          <Button
-            className="bg-red-700 hover:bg-red-600 cursor-pointer"
-            onClick={() => setDeleteAll(true)}
-          >
-            <Trash2 className="w-4 h-4 cursor-pointer" />
-            All Delete
+        <div className="flex flex-wrap items-end gap-3 mb-6">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">Title</label>
+            <Input
+              placeholder="Search by title"
+              value={searchTitle}
+              onChange={(e) => setSearchTitle(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">Status</label>
+            <select
+              value={searchStatus}
+              onChange={(e) => setSearchStatus(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+            >
+              <option value="">All</option>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+          <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
+            <Search className="w-4 h-4 cursor-pointer" />
+            Search
           </Button>
-        </div> */}
-      </div>
-
-      <div className="flex flex-wrap items-end gap-3 mb-6">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Title</label>
-          <Input
-            placeholder="Search by title"
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-400">Status</label>
-          <select
-            value={searchStatus}
-            onChange={(e) => setSearchStatus(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+          <Button
+            className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
+            onClick={() => navigate("/admin/add-blogs")}
           >
-            <option value="">All</option>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
+            Create Blog
+          </Button>
         </div>
-        <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
-          <Search className="w-4 h-4 cursor-pointer" />
-          Search
-        </Button>
-     <Button
-  className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
-  onClick={() => navigate("/admin/add-blogs")}
->
-  Create Blog
-</Button>
-      </div>
 
-      <div className="text-sm text-gray-400 mb-3">
-        {blogs.length > 0
-          ? `Showing ${(page - 1) * limit + 1} - ${(page - 1) * limit + blogs.length} of ${totalCount} blogs`
-          : "No blogs found"}
-      </div>
+        <div className="text-sm text-gray-400 mb-3">
+          {blogs.length > 0
+            ? `Showing ${(page - 1) * limit + 1} - ${(page - 1) * limit + blogs.length} of ${totalCount} blogs`
+            : "No blogs found"}
+        </div>
 
-      {loading ? (
-        <p className="text-gray-400">Loading...</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-800 rounded-xl overflow-hidden">
-            <thead className="bg-gray-800 text-left text-sm uppercase text-gray-400">
-              <tr>
-                <th className="p-3">#</th>
-                <th className="p-3">Image</th>
-                <th className="p-3">Title</th>
-                <th className="p-3">Content</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {!blogs?.length ? (
+        {loading ? (
+          <p className="text-gray-400">Loading...</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full border border-gray-800 rounded-md overflow-hidden">
+              <thead className="bg-gray-800 text-left text-sm uppercase text-gray-400">
                 <tr>
-                  <td colSpan={6} className="p-6 text-center text-gray-500">
-                    No blogs found
-                  </td>
+                  <th className="p-3">#</th>
+                  <th className="p-3">Image</th>
+                  <th className="p-3">Title</th>
+                  <th className="p-3">Content</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3 text-center">Actions</th>
                 </tr>
-              ) : blogs?.map((b, i) => (
-                <tr
-                  key={b._id || b.id}
-                  className={`border-t border-gray-800 hover:bg-gray-900 ${
-                    i % 2 === 0 ? "bg-gray-950/50" : ""
-                  }`}
-                >
-                  <td className="p-3 text-gray-400">{(page - 1) * limit + i + 1}</td>
-                  <td className="p-3">
-                    {b.featuredImage ? (
-                      <img
-                        src={b.featuredImage}
-                        alt={b.title}
-                        className="w-12 h-12 object-cover rounded-lg"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-gray-500" />
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-3 font-semibold max-w-xs truncate">{b.title}</td>
-                  <td className="p-3 max-w-sm truncate text-gray-400 text-sm">
-                    {stripHtml(b.content || "").substring(0, 80)}...
-                  </td>
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                        b.status === "published"
+              </thead>
+
+              <tbody>
+                {!blogs?.length ? (
+                  <tr>
+                    <td colSpan={6} className="p-6 text-center text-gray-500">
+                      No blogs found
+                    </td>
+                  </tr>
+                ) : blogs?.map((b, i) => (
+                  <tr
+                    key={b._id || b.id}
+                    className={`border-t border-gray-800 hover:bg-gray-900 ${i % 2 === 0 ? "bg-gray-950/50" : ""
+                      }`}
+                  >
+                    <td className="p-3 text-gray-400">{(page - 1) * limit + i + 1}</td>
+                    <td className="p-3">
+                      {b.featuredImage ? (
+                        <img
+                          src={b.featuredImage}
+                          alt={b.title}
+                          className="w-12 h-12 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-gray-500" />
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-3 font-semibold max-w-xs truncate">{b.title}</td>
+                    <td className="p-3 max-w-sm truncate text-gray-400 text-sm">
+                      {stripHtml(b.content || "").substring(0, 80)}...
+                    </td>
+                    <td className="p-3">
+                      <span
+                        className={`px-2 py-1 rounded-lg text-xs font-medium ${b.status === "published"
                           ? "bg-green-900 text-green-400"
                           : "bg-yellow-900 text-yellow-400"
-                      }`}
-                    >
-                      {b.status || "draft"}
-                    </span>
-                  </td>
-                  <td className="p-3 flex gap-2 justify-center">
-                    <Button
-                      className="bg-blue-600 hover:bg-blue-500"
-                      onClick={() => setViewBlog(b)}
-                    >
-                      <Eye className="w-4 h-4 cursor-pointer" />
-                    </Button>
-                    <Button
-                      className="bg-red-600 hover:bg-red-500"
-                      onClick={() => handleDelete(b._id || b.id)}
-                    >
-                      <Trash2 className="w-4 h-4 cursor-pointer" />
-                    </Button>
-                    <Button onClick={() => handleEdit(b)}>
-                      <Pencil className="w-4 h-4 cursor-pointer" />
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                          }`}
+                      >
+                        {b.status || "draft"}
+                      </span>
+                    </td>
+                    <td className="p-3 flex gap-2 justify-center">
+                      <Button
+                        className="bg-blue-600 hover:bg-blue-500"
+                        onClick={() => setViewBlog(b)}
+                      >
+                        <Eye className="w-4 h-4 cursor-pointer" />
+                      </Button>
+                      <Button
+                        className="bg-red-600 hover:bg-red-500"
+                        onClick={() => handleDelete(b._id || b.id)}
+                      >
+                        <Trash2 className="w-4 h-4 cursor-pointer" />
+                      </Button>
+                      <Button onClick={() => handleEdit(b)}>
+                        <Pencil className="w-4 h-4 cursor-pointer" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6 cursor-pointer">
-          <Button
-            className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            Prev
-          </Button>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6 cursor-pointer">
+            <Button
+              className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Prev
+            </Button>
 
-          <span className="text-sm text-gray-400 px-3">
-            Page {page} of {totalPages}
-          </span>
+            <span className="text-sm text-gray-400 px-3">
+              Page {page} of {totalPages}
+            </span>
 
-          {getPageNumbers().map((p, i) =>
-            p === "..." ? (
-              <span key={`ellipsis-${i}`} className="px-2 text-gray-500">...</span>
-            ) : (
-              <Button
-                key={p}
-                className={`${
-                  p === page
+            {getPageNumbers().map((p, i) =>
+              p === "..." ? (
+                <span key={`ellipsis-${i}`} className="px-2 text-gray-500">...</span>
+              ) : (
+                <Button
+                  key={p}
+                  className={`${p === page
                     ? "bg-indigo-600 hover:bg-indigo-500"
                     : "bg-gray-700 hover:bg-gray-600"
-                }`}
-                onClick={() => setPage(p)}
-              >
-                {p}
-              </Button>
-            )
-          )}
+                    }`}
+                  onClick={() => setPage(p)}
+                >
+                  {p}
+                </Button>
+              )
+            )}
 
-          <Button
-            className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+            <Button
+              className="bg-gray-700 hover:bg-gray-600 cursor-pointer"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+      </Card>
 
       {/* View Blog Modal */}
       {viewBlog && (
@@ -428,17 +416,16 @@ export default function BlogsPage() {
               <img
                 src={viewBlog.featuredImage}
                 alt={viewBlog.title}
-                className="w-full h-60 object-cover rounded-xl mb-4"
+                className="w-full h-60 object-cover rounded-md mb-4"
               />
             )}
 
             <div className="flex items-center gap-2 mb-4">
               <span
-                className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                  viewBlog.status === "published"
-                    ? "bg-green-900 text-green-400"
-                    : "bg-yellow-900 text-yellow-400"
-                }`}
+                className={`px-2 py-1 rounded-lg text-xs font-medium ${viewBlog.status === "published"
+                  ? "bg-green-900 text-green-400"
+                  : "bg-yellow-900 text-yellow-400"
+                  }`}
               >
                 {viewBlog.status || "draft"}
               </span>
@@ -476,7 +463,7 @@ export default function BlogsPage() {
             {/* Rich Text Editor */}
             <div>
               <label className="block text-sm mb-2 text-gray-300">Content</label>
-              <div className="rounded-xl overflow-hidden border border-gray-700">
+              <div className="rounded-md overflow-hidden border border-gray-700">
                 <ReactQuill
                   theme="snow"
                   value={selected.content || ""}
@@ -504,7 +491,7 @@ export default function BlogsPage() {
                 />
                 <label
                   htmlFor="editImageUpload"
-                  className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-gray-700 cursor-pointer transition hover:border-blue-500 hover:bg-gray-800/50"
+                  className="flex items-center gap-2 px-4 py-3 rounded-md border-2 border-dashed border-gray-700 cursor-pointer transition hover:border-blue-500 hover:bg-gray-800/50"
                 >
                   <Upload className="w-5 h-5 text-gray-400" />
                   <span className="text-sm text-gray-400">
@@ -527,7 +514,7 @@ export default function BlogsPage() {
                   <img
                     src={editImagePreview}
                     alt="Preview"
-                    className="w-full h-40 object-cover rounded-xl border border-gray-700"
+                    className="w-full h-40 object-cover rounded-md border border-gray-700"
                     onError={(e) => {
                       e.target.style.display = "none";
                     }}
@@ -543,7 +530,7 @@ export default function BlogsPage() {
             <select
               value={selected.status || "draft"}
               onChange={(e) => setSelected({ ...selected, status: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+              className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>

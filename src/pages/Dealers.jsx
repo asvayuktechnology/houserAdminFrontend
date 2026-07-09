@@ -10,15 +10,19 @@ import {
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import Card from "../components/ui/Card";
+import Modal from "../components/ui/modal/Modal";
+import Button from "../components/ui/Button";
+import FormModal from "../components/ui/modal/FormModal";
+import ConfirmModal from "../components/ui/modal/ConfirmModal";
 
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = (props) => (
   <input
@@ -246,7 +250,7 @@ export default function DealersPage() {
 
           <div className="flex items-center gap-3">
             <Button
-              className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
+              variant="primary"
               onClick={() => document.getElementById("excelInput").click()}
             >
               <Upload className="w-4 h-4 cursor-pointer" />
@@ -262,7 +266,7 @@ export default function DealersPage() {
             />
 
             <Button
-              className="bg-green-600 hover:bg-red-500 cursor-pointer"
+              variant="secondary"
               onClick={handleExport}
             >
               <Download className="w-4 h-4 cursor-pointer" />
@@ -317,11 +321,11 @@ export default function DealersPage() {
             onKeyDown={handleKeyDown}
           />
         </div> */}
-          <Button className="bg-indigo-600 hover:bg-indigo-500 h-[42px] cursor-pointer" onClick={handleSearch}>
+          <Button variant="outline" onClick={handleSearch}>
             <Search className="w-4 h-4 cursor-pointer" />
             Search
           </Button>
-          <Button className="bg-red-700 hover:bg-red-600 h-[42px] cursor-pointer" onClick={() => setDeleteAll(true)}>
+          <Button variant="danger" onClick={() => setDeleteAll(true)}>
             <Trash2 className="w-4 h-4 cursor-pointer" />
             All Delete
           </Button>
@@ -410,7 +414,7 @@ export default function DealersPage() {
                     <td className="p-3 text-center">
                       {d.lat && d.lng ? (
                         <Button
-                          className="bg-purple-600 hover:bg-purple-500"
+                          variant="secondary"
                           onClick={() => setMapDealer(d)}
                         >
                           View
@@ -422,13 +426,13 @@ export default function DealersPage() {
 
                     <td className="p-3 flex gap-2 justify-center">
                       <Button
-                        className="bg-red-600 hover:bg-red-500"
+                        variant="danger"
                         onClick={() => handleDelete(d.id)}
                       >
                         <Trash2 className="w-4 h-4 cursor-pointer" />
                       </Button>
 
-                      <Button onClick={() => handleEdit(d)}>
+                      <Button variant="primary" onClick={() => handleEdit(d)}>
                         <Pencil className="w-4 h-4 cursor-pointer" />
                       </Button>
                     </td>
@@ -481,7 +485,7 @@ export default function DealersPage() {
         )}
       </Card>
 
-      {mapDealer && (
+      {/* {mapDealer && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-4 rounded-2xl w-full max-w-2xl border border-gray-800">
             <h2 className="text-lg font-semibold mb-3 text-center">
@@ -518,9 +522,43 @@ export default function DealersPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+      <Modal
+  open={!!mapDealer}
+  onClose={() => setMapDealer(null)}
+  title={`${mapDealer?.name} Location`}
+  size="lg"
+>
+  <iframe
+    title="map"
+    width="100%"
+    height="420"
+    className="rounded-2xl border border-[#2A3052]"
+    src={`https://www.google.com/maps?q=${mapDealer?.lat},${mapDealer?.lng}&output=embed`}
+  />
 
-      {selected && (
+  <div className="mt-6 flex justify-end gap-3">
+    <Button
+      variant="secondary"
+      onClick={() => setMapDealer(null)}
+    >
+      Close
+    </Button>
+
+    <Button
+      onClick={() =>
+        window.open(
+          `https://www.google.com/maps?q=${mapDealer?.lat},${mapDealer?.lng}`,
+          "_blank"
+        )
+      }
+    >
+      Open in Maps
+    </Button>
+  </div>
+</Modal>
+
+      {/* {selected && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-lg space-y-3 border border-gray-800">
             <h2 className="text-xl font-semibold">Edit Dealer</h2>
@@ -559,9 +597,65 @@ export default function DealersPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
-      {deleteAll && (
+      {/* EDIT DEALER */}
+<FormModal
+  open={!!selected}
+  title="Edit Dealer"
+  loading={loading}
+  submitText="Save"
+  loadingText="Saving..."
+  onClose={() => setSelected(null)}
+  onSubmit={handleSave}
+>
+  {[
+    "city",
+    "name",
+    "phone",
+    "address",
+    "website",
+    "rating",
+    "lat",
+    "lng",
+  ].map((field) => (
+    <Input
+      key={field}
+      placeholder={field}
+      value={selected?.[field] || ""}
+      onChange={(e) =>
+        setSelected({
+          ...selected,
+          [field]: e.target.value,
+        })
+      }
+    />
+  ))}
+</FormModal>
+
+{/* DELETE DEALER */}
+<ConfirmModal
+  open={!!deleteId}
+  title="Delete Dealer"
+  description="This dealer will be permanently deleted."
+  confirmText="Delete"
+  loading={loading}
+  onClose={() => setDeleteId(null)}
+  onConfirm={confirmDelete}
+/>
+
+{/* DELETE ALL DEALERS */}
+<ConfirmModal
+  open={deleteAll}
+  title="Delete All Dealers"
+  description="This will permanently delete all dealers."
+  confirmText="Delete All"
+  loading={loading}
+  onClose={() => setDeleteAll(false)}
+  onConfirm={confirmDeleteAll}
+/>
+
+      {/* {deleteAll && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm border border-gray-800 text-center space-y-4">
             <h2 className="text-xl font-semibold">Delete All Dealers?</h2>
@@ -610,7 +704,7 @@ export default function DealersPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

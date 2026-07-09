@@ -14,6 +14,8 @@ import {
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import Card from "../components/ui/Card";
+import FormModal from "../components/ui/modal/FormModal";
+import ConfirmModal from "../components/ui/modal/ConfirmModal";
 const Button = ({ children, className = "", ...props }) => (
   <button
     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
@@ -250,8 +252,8 @@ export default function PropertiesPage() {
       <Card title="Properties" >
         {/* HEADER + EXPORT */}
         <div className="flex md:flex-row flex-col md:justify-between md:items-center mb-6 mt-4 md:gap-0 gap-4">
-          
-        
+
+
           <div className="flex items-center gap-3">
             <Button
               className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
@@ -464,8 +466,67 @@ export default function PropertiesPage() {
         )}
 
       </Card>
+
+      <FormModal
+        open={!!selected}
+        title="Edit Property"
+        loading={loading}
+        onClose={() => setSelected(null)}
+        onSubmit={handleSave}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            "city",
+            "sector",
+            "plotNumber",
+            "categoryCode",
+            "subCategoryCode",
+            "name",
+            "fatherName",
+            "permanentAddress",
+            "correspondenceAddress",
+            "mobileNumber",
+            "email",
+          ].map((field) => (
+            <Input
+              key={field}
+              placeholder={field}
+              value={selected?.[field] || ""}
+              onChange={(e) =>
+                setSelected((prev) => ({
+                  ...prev,
+                  [field]: e.target.value,
+                }))
+              }
+            />
+          ))}
+        </div>
+      </FormModal>
+
+      <ConfirmModal
+        open={deleteAll}
+        onClose={() => setDeleteAll(false)}
+        onConfirm={confirmDeleteAll}
+        title="Delete All Properties"
+        description="This will permanently delete all properties. This action cannot be undone."
+        loading={loading}
+        confirmText="Delete All"
+        variant="danger"
+      />
+
+      <ConfirmModal
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        title="Delete Property"
+        description="This property will be permanently deleted. This action cannot be undone."
+        loading={loading}
+        confirmText="Delete"
+        variant="danger"
+      />
+
       {/* EDIT MODAL */}
-      {selected && (
+      {/* {selected && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-lg space-y-3 border border-gray-800">
             <h2 className="text-xl font-semibold">Edit Property</h2>
@@ -508,10 +569,11 @@ export default function PropertiesPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+
 
       {/* ALL DELETE CONFIRM MODAL */}
-      {deleteAll && (
+      {/* {deleteAll && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm border border-gray-800 text-center space-y-4">
             <h2 className="text-xl font-semibold">Delete All Properties?</h2>
@@ -535,10 +597,11 @@ export default function PropertiesPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+
 
       {/* DELETE CONFIRM MODAL */}
-      {deleteId && (
+      {/* {deleteId && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm border border-gray-800 text-center space-y-4">
             <h2 className="text-xl font-semibold">Are you sure?</h2>
@@ -561,7 +624,8 @@ export default function PropertiesPage() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+
     </div>
   );
 }

@@ -167,7 +167,7 @@ import SidebarMenuItem from "./sidebar/SidebarMenuItem";
 import SidebarFooter from "./sidebar/SidebarFooter";
 import { menuSections } from "./sidebar/menuData";
 import { useLocation } from "react-router-dom";
-import { House, HouseHeart, LucideHouse, Pickaxe, User, User2Icon } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, House, HouseHeart, LucideHouse, Pickaxe, User, User2Icon } from "lucide-react";
 
 
 
@@ -332,10 +332,10 @@ const handleDropdownToggle = (menuId) => {
         </div>
 
         {/* Footer */}
-        {/* <SidebarFooter
+        <SidebarFooter
           collapsed={collapsed}
           handleLogout={handleLogout}
-        /> */}
+        />
 
         {/* Collapse Button (Desktop Only) */}
         {!isMobile && (
@@ -345,9 +345,9 @@ const handleDropdownToggle = (menuId) => {
               setIsSidebarOpen(prev => !prev);
             }}
 
-            className="absolute -right-5 top-8 flex h-8 w-8 items-center justify-center rounded-full border border-[#2A3052] bg-[#232A47] text-white shadow-lg transition hover:scale-110"
+            className="cursor-pointer absolute -right-5 top-8 flex h-8 w-8 pl-0.5 items-center justify-center rounded-full border border-[#41476e] bg-[#232A47] text-white shadow-lg transition hover:scale-110"
           >
-            {collapsed ? "›" : "‹"}
+            {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
           </button>
         )}
       </motion.aside>

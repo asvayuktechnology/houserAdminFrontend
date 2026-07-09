@@ -7,10 +7,11 @@ import {
   updateBanner,
 } from "../comman/api";
 import toast from "react-hot-toast";
+import Card from "../components/ui/Card";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-gray-800 hover:bg-gray-700 ${className}`}
+    className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 ${className}`}
     {...props}
   >
     {children}
@@ -19,14 +20,14 @@ const Button = ({ children, className = "", ...props }) => (
 
 const Input = ({ ...props }) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
     {...props}
   />
 );
 
 const Select = ({ ...props }) => (
   <select
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none"
     {...props}
   />
 );
@@ -131,12 +132,13 @@ fd.append("link", form.link);
   };
 
   return (
-    // <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
+      <Card title="Banners">
+
     <div className="min-h-screen  text-white p-6">
-      <h1 className="text-3xl font-bold mb-6 mt-14">Banners</h1>
 
       {/* ADD FORM */}
-      <div className="bg-gray-900 p-4 rounded-2xl border border-gray-800 mb-6 space-y-3">
+      <div className=" mb-6 space-y-3">
         <h2 className="text-lg font-semibold">Add Banner</h2>
 
         <Input
@@ -291,6 +293,8 @@ fd.append("link", form.link);
           </div>
         </div>
       )}
+    </div>
+      </Card>
     </div>
   );
 }
