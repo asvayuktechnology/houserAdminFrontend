@@ -10,12 +10,14 @@ import {
   deleteFixedProperty,
   updateFixedProperty,
   allDeleteProperties,
+  getCities,
 } from "../comman/api";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import Card from "../components/ui/Card";
 import FormModal from "../components/ui/modal/FormModal";
 import ConfirmModal from "../components/ui/modal/ConfirmModal";
+import { useNavigate } from "react-router-dom";
 const Button = ({ children, className = "", ...props }) => (
   <button
     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
@@ -33,6 +35,7 @@ const Input = (props) => (
 );
 
 export default function PropertiesPage() {
+   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [selected, setSelected] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
@@ -40,6 +43,7 @@ export default function PropertiesPage() {
   const [loading, setLoading] = useState(false);
 
   const [fixedProperties, setFixedProperties] = useState([]);
+  const [cities, setCities] = useState([]);
 
   // Search state
   const [searchCity, setSearchCity] = useState("");
@@ -77,6 +81,18 @@ export default function PropertiesPage() {
   useEffect(() => {
     fetchProperties();
   }, [fetchProperties]);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const res = await getCities({ limit: 1000 });
+        setCities(res?.data ?? []);
+      } catch {
+        // silently fail
+      }
+    };
+    fetchCities();
+  }, []);
 
   // Refetch when all search inputs become empty after a previous search
   useEffect(() => {
@@ -327,6 +343,12 @@ export default function PropertiesPage() {
             <Trash2 className="w-4 h-4 cursor-pointer" />
             All Delete
           </Button>
+           <Button
+            className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
+            onClick={() => navigate("/admin/add-properties")}
+          >
+            Create
+          </Button>
         </div>
 
         {/* COUNT INFO */}
@@ -355,7 +377,7 @@ export default function PropertiesPage() {
                   <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">CorrespondenceAddress</th>
                   <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Mobile</th>
                   <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Email</th>
-                  <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Image</th>
+                  {/* <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70">Image</th> */}
                   <th className="px-6 py-4 text-left text-xs uppercase tracking-wider font-medium text-white/70 ">Actions</th>
                 </tr>
               </thead>
@@ -392,7 +414,7 @@ export default function PropertiesPage() {
                     <td className="px-6 py-3 whitespace-nowrap">{p.correspondenceAddress}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{p.mobileNumber}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{p.email}</td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    {/* <td className="px-6 py-3 whitespace-nowrap">
                       {p.imageUrl ? (
                         <img
                           src={p.imageUrl}
@@ -402,7 +424,7 @@ export default function PropertiesPage() {
                       ) : (
                         <span className="text-gray-600">—</span>
                       )}
-                    </td>
+                    </td> */}
 
                     <td className="p-3 flex gap-2 justify-center">
                       <Button
@@ -475,8 +497,27 @@ export default function PropertiesPage() {
         onSubmit={handleSave}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-400">City</label>
+            <select
+              className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-gray-600"
+              value={selected?.city || ""}
+              onChange={(e) =>
+                setSelected((prev) => ({
+                  ...prev,
+                  city: e.target.value,
+                }))
+              }
+            >
+              <option value="">Select City</option>
+              {cities.map((c) => (
+                <option key={c.id} value={c.city}>
+                  {c.city}
+                </option>
+              ))}
+            </select>
+          </div>
           {[
-            "city",
             "sector",
             "plotNumber",
             "categoryCode",
