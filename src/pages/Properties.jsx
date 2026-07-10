@@ -18,15 +18,8 @@ import Card from "../components/ui/Card";
 import FormModal from "../components/ui/modal/FormModal";
 import ConfirmModal from "../components/ui/modal/ConfirmModal";
 import { useNavigate } from "react-router-dom";
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
 import Button from "../components/ui/Button";
+
 // const Button = ({ children, className = "", ...props }) => (
 //   <button
 //     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-gray-800 hover:bg-gray-700 flex items-center gap-1 ${className}`}
@@ -353,7 +346,7 @@ export default function PropertiesPage() {
             All Delete
           </Button>
            <Button
-            className="bg-green-600 hover:bg-green-500 h-[42px] cursor-pointer"
+            variant="success"
             onClick={() => navigate("/admin/add-properties")}
           >
             Create

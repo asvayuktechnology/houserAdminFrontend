@@ -168,7 +168,7 @@ export function AddDealerPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950/80 via-gray-900/80 to-black/80 text-white p-6">
-      <div className="max-w-xl mx-auto   mt-14 mb-6">
+      <div className=" mx-auto   mt-14 mb-6">
         
       <Card showHeader={true} title="Add Dealer (Auto Location)">
 

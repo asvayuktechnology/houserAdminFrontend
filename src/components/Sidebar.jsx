@@ -338,7 +338,7 @@ const handleDropdownToggle = (menuId) => {
         />
 
         {/* Collapse Button (Desktop Only) */}
-        {!isMobile && (
+        {/* {!isMobile && ( */}
           <button
             onClick={() => {
               setCollapsed(prev => !prev);
@@ -349,7 +349,7 @@ const handleDropdownToggle = (menuId) => {
           >
             {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
           </button>
-        )}
+        {/* )} */}
       </motion.aside>
     </>
   );

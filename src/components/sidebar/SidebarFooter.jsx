@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ConfirmModal from "../ui/modal/ConfirmModal";
 
 function SidebarFooter({
   collapsed,
   handleLogout,
 }) {
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   return (
     <div className="border-t border-[#2A3052] bg-[#171B2E] p-3">
       {/* Settings */}
@@ -43,7 +45,7 @@ function SidebarFooter({
       <motion.button
         whileHover={{ x: 3 }}
         whileTap={{ scale: 0.98 }}
-        onClick={handleLogout}
+        onClick={() => setShowLogoutModal(true)}
         className={`
           flex
           h-12
@@ -66,6 +68,19 @@ function SidebarFooter({
           </span>
         )}
       </motion.button>
+
+      <ConfirmModal
+        open={showLogoutModal}
+        title="Logout"
+        description="Are you sure you want to logout from your account?"
+        confirmText="Logout"
+        loading={false}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={() => {
+          setShowLogoutModal(false);
+          handleLogout();
+        }}
+      />
     </div>
   );
 }

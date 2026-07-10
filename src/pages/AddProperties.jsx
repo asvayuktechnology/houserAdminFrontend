@@ -3,26 +3,27 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Card from "../components/ui/Card";
 import { addProperty, getCities } from "../comman/api";
+import Button from "../components/ui/Button";
 
-const Button = ({ children, className = "", ...props }) => (
-  <button
-    className={`px-3 py-2 rounded-xl text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
-);
+// const Button = ({ children, className = "", ...props }) => (
+//   <button
+//     className={`px-3 py-2 rounded-md text-sm font-medium transition bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+//     {...props}
+//   >
+//     {children}
+//   </button>
+// );
 
 const Input = (props) => (
   <input
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
     {...props}
   />
 );
 
 const Select = ({ children, ...props }) => (
   <select
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
     {...props}
   >
     {children}
@@ -32,7 +33,7 @@ const Select = ({ children, ...props }) => (
 const Textarea = (props) => (
   <textarea
     rows={3}
-    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+    className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 resize-none"
     {...props}
   />
 );
@@ -97,7 +98,7 @@ export default function AddPropertiesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950/90 via-gray-900/90 to-black/90 text-white p-6">
-      <div className="max-w-3xl mx-auto">
+      <div className=" mx-auto">
         <Card title="Add Property">
           <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -219,12 +220,12 @@ export default function AddPropertiesPage() {
               }
             />
 
-            <div className="space-y-3">
+            <div className="space-y-3 max-w-[250px] gap-3 flex">
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full cursor-pointer"
+                variant="primary"
               >
                 {loading ? "Saving..." : "Save Property"}
               </Button>
@@ -232,7 +233,7 @@ export default function AddPropertiesPage() {
               <Button
                 type="button"
                 onClick={() => navigate("/admin/properties")}
-                className="w-full bg-gray-700 hover:bg-gray-600 cursor-pointer"
+                variant="secondary"
               >
                 Cancel
               </Button>

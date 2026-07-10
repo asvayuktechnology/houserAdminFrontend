@@ -131,7 +131,7 @@ export function AddBlogPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6">
-      <div className="max-w-3xl mx-auto mt-10">
+      <div className=" mx-auto mt-10">
         <Card showHeader title="Add Blog">
           <div className="space-y-5 p-6">
             {/* Title */}
