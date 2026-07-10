@@ -194,7 +194,7 @@ export const getProperties = (params = {}) => {
 };
 
 export const addProperty = (data) =>
-  apiFetch("/admin/properties", {
+  apiFetch("/admin/fixed-properties", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -387,6 +387,39 @@ export const allDeletePosts = () =>
 
 
  export const logout=()=>apiFetch("/logout")
+
+
+// 🏙️ CITIES
+export const getCities = (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") query.append(k, v);
+  });
+  const qs = query.toString();
+  return apiFetch(`/city${qs ? "?" + qs : ""}`);
+};
+
+export const addCity = (data) =>
+  apiFetch("/admin/city", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const deleteCity = (id) =>
+  apiFetch(`/admin/city/${id}`, {
+    method: "DELETE",
+  });
+
+export const updateCity = (id, data) =>
+  apiFetch(`/admin/city/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+
+export const allDeleteCities = () =>
+  apiFetch("/admin/delete-all-cities", {
+    method: "DELETE",
+  });
 
 
 // ⚙️ SETTINGS

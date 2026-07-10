@@ -20,6 +20,8 @@ import SettingsPage from './pages/Settings';
 import NotFound from './pages/NotFound';
 import { AddBlogPage } from './pages/addBlog';
 import BlogsPage from './pages/blogs';
+import AddPropertiesPage from './pages/AddProperties';
+import CityListingsPage from './pages/CityListings';
 
 function App() {
 
@@ -94,6 +96,10 @@ function App() {
         element: <AddBlogPage />
       },
       {
+        path:'add-properties',
+        element: <AddPropertiesPage />
+      },
+      {
         path:'blogs',
         element: <BlogsPage />
       },
@@ -101,6 +107,10 @@ function App() {
       {
         path:'settings',
         element: <SettingsPage />
+      },
+      {
+        path:'city-listings',
+        element: <CityListingsPage />
       },
     ]
 
