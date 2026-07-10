@@ -189,7 +189,7 @@ const DashboardHome = () => {
 
           {/* Footer */}
           <div className="pt-5 text-center">
-            <button className="text-sm font-medium text-gray-300 transition hover:text-blue-500">
+            <button className="cursor-pointer text-sm font-medium text-gray-300 transition hover:text-blue-500">
               View All →
             </button>
           </div>
@@ -224,7 +224,7 @@ const DashboardHome = () => {
                       </p>
 
                       {u.role && (
-                        <span className=" inline-flex rounded-full bg-blue-600/10 px-2 py-1 text-[11px] font-medium text-blue-400">
+                        <span className="capitalize inline-flex rounded-full bg-blue-600/10 px-2 py-1 text-[11px] font-medium text-blue-400">
                           {u.role}
                         </span>
                       )}
@@ -245,7 +245,7 @@ const DashboardHome = () => {
 
           {/* Footer */}
           <div className="pt-5 text-center">
-            <button className="text-sm font-medium text-gray-300 transition hover:text-blue-500">
+            <button className="cursor-pointer text-sm font-medium text-gray-300 transition hover:text-blue-500">
               View All →
             </button>
           </div>

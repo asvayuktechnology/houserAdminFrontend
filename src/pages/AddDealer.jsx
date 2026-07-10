@@ -224,6 +224,8 @@ export function AddDealerPage() {
           <Button
             type="button"
             variant="success"
+            size="md"
+
             className="w-full"
             onClick={getCurrentLocation}
           >
@@ -256,7 +258,7 @@ export function AddDealerPage() {
             </p>
           )}
 
-          <Button variant="primary" onClick={handleSubmit} className="w-full">
+          <Button variant="primary" size="md" onClick={handleSubmit} className="w-full">
             Save Dealer
           </Button>
         </div>
